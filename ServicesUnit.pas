@@ -1,4 +1,4 @@
-unit ServicesUnit;
+﻿unit ServicesUnit;
 
 interface
 
@@ -31,7 +31,7 @@ type
   public
     constructor Create(Config: TConfigServices);
     destructor Destroy; override;
-    function Request(Method, Route: string; Payload: TJSONObject = nil; Headers: TStrings = nil): string;
+    function Request(Method, Route: string; Payload: TStringList = nil; Headers: TStrings = nil): string;
     property Error: TErrorService read FError;
   end;
 
@@ -70,11 +70,12 @@ begin
   IOHandle.SSLOptions.Mode := sslmClient;
 end;
 
-function TServices.Request(Method, Route: string; Payload: TJSONObject = nil; Headers: TStrings = nil): string;
+function TServices.Request(Method, Route: string; Payload: TStringList = nil; Headers: TStrings = nil): string;
 var
   ResponseStream: TStringStream;
   RequestStream: TStringStream;
   URL: string;
+  HeaderItem: string;
 begin
   ResponseStream := TStringStream.Create;
   RequestStream := TStringStream.Create;
@@ -82,10 +83,13 @@ begin
     URL := FBaseUri + Route;
 
     if Headers <> nil then
-      HTTP.Request.CustomHeaders.AddStrings(Headers);
+    begin
+      for HeaderItem in Headers do
+        HTTP.Request.CustomHeaders.Add(HeaderItem);
+    end;
 
     if Payload <> nil then
-      RequestStream.WriteString(Payload.ToString);
+      RequestStream.WriteString(Payload.Text);
 
     try
       if Method = 'GET' then
@@ -103,23 +107,25 @@ begin
       else if Method = 'DELETE' then
       begin
         HTTP.Delete(URL);
-        Result := 'Requisi��o DELETE bem-sucedida';
+        Result := 'Requisicao DELETE bem-sucedida';
       end
       else
-        raise Exception.Create('M�todo HTTP n�o suportado.');
+        raise Exception.Create('Metodo HTTP nao suportado.');
 
     except
       on E: EIdHTTPProtocolException do
       begin
         FError.Code := IntToStr(E.ErrorCode);
         FError.Message := E.Message;
-        raise Exception.CreateFmt('Erro na requisi��o: %s', [FError.Message]);
+        
+        Result := E.ErrorMessage;
       end;
       on E: Exception do
       begin
         FError.Code := '500';
         FError.Message := E.Message;
-        raise Exception.CreateFmt('Erro desconhecido: %s', [E.Message]);
+
+        Result := Format('{"error": {"code": "%s", "message": "%s"}}', [FError.Code, FError.Message]);
       end;
     end;
   finally
@@ -129,4 +135,3 @@ begin
 end;
 
 end.
-
