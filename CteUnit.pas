@@ -11,29 +11,29 @@ type
   TCte = class(TBase)
   public
     function Status: TJSONObject;
-    function Consulta(const Payload: TJSONObject): TJSONObject;
-    function Pdf(const Payload: TJSONObject): TJSONObject;
-    function Cria(const Payload: TJSONObject): TJSONObject;
-    function Busca(const Payload: TJSONObject): TJSONObject;
-    function Cancela(const Payload: TJSONObject): TJSONObject;
-    function Correcao(const Payload: TJSONObject): TJSONObject;
-    function Inutiliza(const Payload: TJSONObject): TJSONObject;
-    function Backup(const Payload: TJSONObject): TJSONObject;
-    function Importa(const Payload: TJSONObject): TJSONObject;
-    function Preview(const Payload: TJSONObject): TJSONObject;
-    function Desacordo(const Payload: TJSONObject): TJSONObject;
+    function Consulta(const Payload: TJSONObject): string;
+    function Pdf(const Payload: TJSONObject): string;
+    function Cria(const Payload: TJSONObject): string;
+    function Busca(const Payload: TJSONObject): string;
+    function Cancela(const Payload: TJSONObject): string;
+    function Correcao(const Payload: TJSONObject): string;
+    function Inutiliza(const Payload: TJSONObject): string;
+    function Backup(const Payload: TJSONObject): string;
+    function Importa(const Payload: TJSONObject): string;
+    function Preview(const Payload: TJSONObject): string;
+    function Desacordo(const Payload: TJSONObject): string;
   end;
 
 implementation
 
 { TCte }
 
-function TCte.Status: TJSONObject;
+function TCte.Status: string;
 begin
   Result := FClient.Send('GET', '/cte/status', nil);
 end;
 
-function TCte.Consulta(const Payload: TJSONObject): TJSONObject;
+function TCte.Consulta(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -41,7 +41,7 @@ begin
   Result := FClient.Send('GET', Format('/cte/%s', [Key]), nil);
 end;
 
-function TCte.Pdf(const Payload: TJSONObject): TJSONObject;
+function TCte.Pdf(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -49,47 +49,47 @@ begin
   Result := FClient.Send('GET', Format('/cte/pdf/%s', [Key]), nil);
 end;
 
-function TCte.Cria(const Payload: TJSONObject): TJSONObject;
+function TCte.Cria(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte', Payload);
 end;
 
-function TCte.Busca(const Payload: TJSONObject): TJSONObject;
+function TCte.Busca(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/busca', Payload);
 end;
 
-function TCte.Cancela(const Payload: TJSONObject): TJSONObject;
+function TCte.Cancela(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/cancela', Payload);
 end;
 
-function TCte.Correcao(const Payload: TJSONObject): TJSONObject;
+function TCte.Correcao(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/correcao', Payload);
 end;
 
-function TCte.Inutiliza(const Payload: TJSONObject): TJSONObject;
+function TCte.Inutiliza(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/inutiliza', Payload);
 end;
 
-function TCte.Backup(const Payload: TJSONObject): TJSONObject;
+function TCte.Backup(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/backup', Payload);
 end;
 
-function TCte.Importa(const Payload: TJSONObject): TJSONObject;
+function TCte.Importa(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/importa', Payload);
 end;
 
-function TCte.Preview(const Payload: TJSONObject): TJSONObject;
+function TCte.Preview(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/preview', Payload);
 end;
 
-function TCte.Desacordo(const Payload: TJSONObject): TJSONObject;
+function TCte.Desacordo(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/desacordo', Payload);
 end;

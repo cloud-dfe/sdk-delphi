@@ -11,7 +11,7 @@ type
   TEmitente = class(TBase)
   public
     function Token: TJSONObject;
-    function Atualiza(const Payload: TJSONObject): TJSONObject;
+    function Atualiza(const Payload: TJSONObject): string;
     function Mostra: TJSONObject;
   end;
 
@@ -19,17 +19,17 @@ implementation
 
 { TEmitente }
 
-function TEmitente.Token: TJSONObject;
+function TEmitente.Token: string;
 begin
   Result := FClient.Send('GET', '/emitente/token', nil);
 end;
 
-function TEmitente.Atualiza(const Payload: TJSONObject): TJSONObject;
+function TEmitente.Atualiza(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('PUT', '/emitente', Payload);
 end;
 
-function TEmitente.Mostra: TJSONObject;
+function TEmitente.Mostra: string;
 begin
   Result := FClient.Send('GET', '/emitente', nil);
 end;

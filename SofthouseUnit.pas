@@ -10,28 +10,28 @@ type
 
   TSofthouse = class(TBase)
   public
-    function CriaEmitente(const Payload: TJSONObject): TJSONObject;
-    function AtualizaEmitente(const Payload: TJSONObject): TJSONObject;
-    function MostraEmitente(const Payload: TJSONObject): TJSONObject;
-    function ListaEmitentes(const Payload: TJSONObject): TJSONObject;
-    function DeletaEmitente(const Payload: TJSONObject): TJSONObject;
+    function CriaEmitente(const Payload: TJSONObject): string;
+    function AtualizaEmitente(const Payload: TJSONObject): string;
+    function MostraEmitente(const Payload: TJSONObject): string;
+    function ListaEmitentes(const Payload: TJSONObject): string;
+    function DeletaEmitente(const Payload: TJSONObject): string;
   end;
 
 implementation
 
 { TSofthouse }
 
-function TSofthouse.CriaEmitente(const Payload: TJSONObject): TJSONObject;
+function TSofthouse.CriaEmitente(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/soft/emitente', Payload);
 end;
 
-function TSofthouse.AtualizaEmitente(const Payload: TJSONObject): TJSONObject;
+function TSofthouse.AtualizaEmitente(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('PUT', '/soft/emitente', Payload);
 end;
 
-function TSofthouse.MostraEmitente(const Payload: TJSONObject): TJSONObject;
+function TSofthouse.MostraEmitente(const Payload: TJSONObject): string;
 var
   Doc: string;
 begin
@@ -40,7 +40,7 @@ begin
   Result := FClient.Send('GET', '/soft/emitente/' + Doc, nil);
 end;
 
-function TSofthouse.ListaEmitentes(const Payload: TJSONObject): TJSONObject;
+function TSofthouse.ListaEmitentes(const Payload: TJSONObject): string;
 var
   Status, Rota: string;
 begin
@@ -52,7 +52,7 @@ begin
   Result := FClient.Send('GET', Rota, nil);
 end;
 
-function TSofthouse.DeletaEmitente(const Payload: TJSONObject): TJSONObject;
+function TSofthouse.DeletaEmitente(const Payload: TJSONObject): string;
 var
   Doc: string;
 begin

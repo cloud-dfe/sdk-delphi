@@ -10,7 +10,7 @@ type
 
   TCertificado = class(TBase)
   public
-    function Atualiza(const Payload: TJSONObject): TJSONObject;
+    function Atualiza(const Payload: TJSONObject): string;
     function Mostra: TJSONObject;
   end;
 
@@ -18,7 +18,7 @@ implementation
 
 { TCertificado }
 
-function TCertificado.Atualiza(const Payload: TJSONObject): TJSONObject;
+function TCertificado.Atualiza(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/certificado', Payload);
 end;
