@@ -8,7 +8,7 @@ uses
 type
   ENfseException = class(Exception);
 
-  TNfse = class(TBase)
+  TIntegraNfse = class(TBase)
   public
     function Cria(Payload: TJSONObject): string;
     function Preview(Payload: TJSONObject): string;
@@ -27,19 +27,19 @@ type
 
 implementation
 
-{ TNfse }
+{ TIntegraNfse }
 
-function TNfse.Cria(Payload: TJSONObject): string;
+function TIntegraNfse.Cria(Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfse', Payload);
 end;
 
-function TNfse.Preview(Payload: TJSONObject): string;
+function TIntegraNfse.Preview(Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfse/preview', Payload);
 end;
 
-function TNfse.Pdf(Payload: TJSONObject): string;
+function TIntegraNfse.Pdf(Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -47,7 +47,7 @@ begin
   Result := FClient.Send('GET', '/nfse/pdf/' + Key);
 end;
 
-function TNfse.Consulta(Payload: TJSONObject): string;
+function TIntegraNfse.Consulta(Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -55,32 +55,32 @@ begin
   Result := FClient.Send('GET', '/nfse/' + Key);
 end;
 
-function TNfse.Cancela(Payload: TJSONObject): string;
+function TIntegraNfse.Cancela(Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfse/cancela', Payload);
 end;
 
-function TNfse.Substitui(Payload: TJSONObject): string;
+function TIntegraNfse.Substitui(Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfse/substitui', Payload);
 end;
 
-function TNfse.Busca(Payload: TJSONObject): string;
+function TIntegraNfse.Busca(Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfse/busca', Payload);
 end;
 
-function TNfse.Backup(Payload: TJSONObject): string;
+function TIntegraNfse.Backup(Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfse/backup', Payload);
 end;
 
-function TNfse.Localiza(Payload: TJSONObject): string;
+function TIntegraNfse.Localiza(Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfse/consulta', Payload);
 end;
 
-function TNfse.Info(Payload: TJSONObject): string;
+function TIntegraNfse.Info(Payload: TJSONObject): string;
 var
   IBGECode: string;
 begin
@@ -91,17 +91,17 @@ begin
   Result := FClient.Send('GET', '/nfse/info/' + IBGECode);
 end;
 
-function TNfse.Conflito(Payload: TJSONObject): string;
+function TIntegraNfse.Conflito(Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfse/conflito', Payload);
 end;
 
-function TNfse.Offline: string;
+function TIntegraNfse.Offline: string;
 begin
   Result := FClient.Send('GET', '/nfse/offline');
 end;
 
-function TNfse.Resolve(Payload: TJSONObject): string;
+function TIntegraNfse.Resolve(Payload: TJSONObject): string;
 var
   Key: string;
 begin
