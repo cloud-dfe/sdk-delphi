@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  NFce: TNfce;
+  IntegraNfse: TIntegraNfse;
 
 implementation
 
@@ -34,7 +34,7 @@ var
   Resp: string;
   Params, Payload: TJSONObject;
 begin
-  FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjE1OTUsInVzciI6MTcwLCJ0cCI6MiwiaWF0IjoxNzE4MjAxOTA5fQ.HkOW2RGdi9vRQhckH_lkmHvw1O75ojnxdJCRcs6X2pY';
+  FToken := 'TokenDoEmitente';
   FAmbiente := 2;
   FTimeout := 60;
   FPort := 443;
@@ -48,18 +48,18 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    NFce := TNfce.Create(Params);
+    IntegraNfse := TIntegraNfse.Create(Params);
     try
       Payload := TJSONObject.Create;
       try
         Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
-        Resp := NFce.Consulta(Payload);
+        Resp := IntegraNfse.Pdf(Payload);
         ShowMessage(Resp);
       finally
         Payload.Free;
       end;
     finally
-      NFce.Free;
+      IntegraNfse.Free;
     end;
   finally
     Params.Free;

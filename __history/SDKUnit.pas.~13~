@@ -34,12 +34,14 @@ var
   Resp: string;
   Params, Payload: TJSONObject;
 begin
+  // Parâmetros para o ambiente de consulta
   FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjE1OTUsInVzciI6MTcwLCJ0cCI6MiwiaWF0IjoxNzE4MjAxOTA5fQ.HkOW2RGdi9vRQhckH_lkmHvw1O75ojnxdJCRcs6X2pY';
-  FAmbiente := 2;
+  FAmbiente := 2;  // 1 para produção e 2 para homologação
   FTimeout := 60;
   FPort := 443;
   FDebug := False;
 
+  // Criação do JSON de parâmetros para a consulta
   Params := TJSONObject.Create;
   try
     Params.AddPair('token', FToken);
@@ -48,6 +50,7 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
+    // Instancia o objeto NFSe com os parâmetros
     NFce := TNfce.Create(Params);
     try
       Payload := TJSONObject.Create;

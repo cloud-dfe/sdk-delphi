@@ -8,7 +8,7 @@ uses
 type
   EDfeException = class(EBaseException);
 
-  TDfe = class(TBase)
+  TIntegraDfe = class(TBase)
   public
     function BuscaCte(const Payload: TJSONObject): string;
     function BuscaNfe(const Payload: TJSONObject): string;
@@ -22,19 +22,19 @@ type
 
 implementation
 
-{ TDfe }
+{ TIntegraDfe }
 
-function TDfe.BuscaCte(const Payload: TJSONObject): string;
+function TIntegraDfe.BuscaCte(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/dfe/cte', Payload);
 end;
 
-function TDfe.BuscaNfe(const Payload: TJSONObject): string;
+function TIntegraDfe.BuscaNfe(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/dfe/nfe', Payload);
 end;
 
-function TDfe.DownloadNfe(const Payload: TJSONObject): string;
+function TIntegraDfe.DownloadNfe(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -42,12 +42,12 @@ begin
   Result := FClient.Send('GET', Format('/dfe/nfe/%s', [Key]), nil);
 end;
 
-function TDfe.BuscaNfse(const Payload: TJSONObject): string;
+function TIntegraDfe.BuscaNfse(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/dfe/nfse', Payload);
 end;
 
-function TDfe.DownloadNfse(const Payload: TJSONObject): string;
+function TIntegraDfe.DownloadNfse(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -55,7 +55,7 @@ begin
   Result := FClient.Send('GET', Format('/dfe/nfse/%s', [Key]), nil);
 end;
 
-function TDfe.DownloadCte(const Payload: TJSONObject): string;
+function TIntegraDfe.DownloadCte(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -63,7 +63,7 @@ begin
   Result := FClient.Send('GET', Format('/dfe/cte/%s', [Key]), nil);
 end;
 
-function TDfe.Eventos(const Payload: TJSONObject): string;
+function TIntegraDfe.Eventos(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -71,7 +71,7 @@ begin
   Result := FClient.Send('GET', Format('/dfe/eventos/%s', [Key]), nil);
 end;
 
-function TDfe.Backup(const Payload: TJSONObject): string;
+function TIntegraDfe.Backup(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/dfe/backup', Payload);
 end;

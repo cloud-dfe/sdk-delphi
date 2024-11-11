@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfceUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  NFce: TNfce;
+  IntegraNfse: TIntegraNfse;
 
 implementation
 
@@ -48,18 +48,22 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    NFce := TNfce.Create(Params);
+    IntegraNfse := TIntegraNfse.Create(Params);
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
-        Resp := NFce.Consulta(Payload);
+        Payload.AddPair('numero_rps_inicial', TJSONNumber.Create(15));
+        Payload.AddPair('numero_rps_final', TJSONNumber.Create(15));
+        Payload.AddPair('serie_rps', '0');
+        
+        Resp := IntegraNfse.Busca(Payload);
+        
         ShowMessage(Resp);
       finally
         Payload.Free;
       end;
     finally
-      NFce.Free;
+      IntegraNfse.Free;
     end;
   finally
     Params.Free;
@@ -67,4 +71,3 @@ begin
 end;
 
 end.
-

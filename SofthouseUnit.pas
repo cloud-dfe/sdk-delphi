@@ -8,7 +8,7 @@ uses
 type
   ESofthouseException = class(EBaseException);
 
-  TSofthouse = class(TBase)
+  TIntegraSofthouse = class(TBase)
   public
     function CriaEmitente(const Payload: TJSONObject): string;
     function AtualizaEmitente(const Payload: TJSONObject): string;
@@ -19,19 +19,19 @@ type
 
 implementation
 
-{ TSofthouse }
+{ TIntegraSofthouse }
 
-function TSofthouse.CriaEmitente(const Payload: TJSONObject): string;
+function TIntegraSofthouse.CriaEmitente(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/soft/emitente', Payload);
 end;
 
-function TSofthouse.AtualizaEmitente(const Payload: TJSONObject): string;
+function TIntegraSofthouse.AtualizaEmitente(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('PUT', '/soft/emitente', Payload);
 end;
 
-function TSofthouse.MostraEmitente(const Payload: TJSONObject): string;
+function TIntegraSofthouse.MostraEmitente(const Payload: TJSONObject): string;
 var
   Doc: string;
 begin
@@ -40,7 +40,7 @@ begin
   Result := FClient.Send('GET', '/soft/emitente/' + Doc, nil);
 end;
 
-function TSofthouse.ListaEmitentes(const Payload: TJSONObject): string;
+function TIntegraSofthouse.ListaEmitentes(const Payload: TJSONObject): string;
 var
   Status, Rota: string;
 begin
@@ -52,7 +52,7 @@ begin
   Result := FClient.Send('GET', Rota, nil);
 end;
 
-function TSofthouse.DeletaEmitente(const Payload: TJSONObject): string;
+function TIntegraSofthouse.DeletaEmitente(const Payload: TJSONObject): string;
 var
   Doc: string;
 begin

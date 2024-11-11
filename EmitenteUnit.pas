@@ -8,7 +8,7 @@ uses
 type
   EEmitenteException = class(EBaseException);
 
-  TEmitente = class(TBase)
+  TIntegraEmitente = class(TBase)
   public
     function Token: TJSONObject;
     function Atualiza(const Payload: TJSONObject): string;
@@ -17,19 +17,19 @@ type
 
 implementation
 
-{ TEmitente }
+{ TIntegraEmitente }
 
-function TEmitente.Token: string;
+function TIntegraEmitente.Token: string;
 begin
   Result := FClient.Send('GET', '/emitente/token', nil);
 end;
 
-function TEmitente.Atualiza(const Payload: TJSONObject): string;
+function TIntegraEmitente.Atualiza(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('PUT', '/emitente', Payload);
 end;
 
-function TEmitente.Mostra: string;
+function TIntegraEmitente.Mostra: string;
 begin
   Result := FClient.Send('GET', '/emitente', nil);
 end;

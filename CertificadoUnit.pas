@@ -8,7 +8,7 @@ uses
 type
   ECertificadoException = class(EBaseException);
 
-  TCertificado = class(TBase)
+  TIntegraCertificado = class(TBase)
   public
     function Atualiza(const Payload: TJSONObject): string;
     function Mostra: TJSONObject;
@@ -16,14 +16,14 @@ type
 
 implementation
 
-{ TCertificado }
+{ TIntegraCertificado }
 
-function TCertificado.Atualiza(const Payload: TJSONObject): string;
+function TIntegraCertificado.Atualiza(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/certificado', Payload);
 end;
 
-function TCertificado.Mostra: TJSONObject;
+function TIntegraCertificado.Mostra: TJSONObject;
 var
   EmptyPayload: TJSONObject;
 begin

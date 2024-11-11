@@ -8,8 +8,8 @@ uses
 
 type
   TForm1 = class(TForm)
-    Button1: TButton;  // Botão para realizar a consulta
-    procedure Button1Click(Sender: TObject);  // Procedimento de consulta
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  NFse: TNfse;
+  IntegraNfse: TIntegraNfse;
 
 implementation
 
@@ -32,16 +32,14 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params, Payload: TJSONObject;
+  Params: TJSONObject;
 begin
-  // Parâmetros para o ambiente de consulta
   FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjE1OTUsInVzciI6MTcwLCJ0cCI6MiwiaWF0IjoxNzE4MjAxOTA5fQ.HkOW2RGdi9vRQhckH_lkmHvw1O75ojnxdJCRcs6X2pY';
-  FAmbiente := 2;  // 1 para homologação, 2 para produção
+  FAmbiente := 2;
   FTimeout := 60;
   FPort := 443;
   FDebug := False;
 
-  // Criação do JSON de parâmetros para a consulta
   Params := TJSONObject.Create;
   try
     Params.AddPair('token', FToken);
@@ -50,19 +48,13 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    // Instancia o objeto NFSe com os parâmetros
-    NFse := TNfse.Create(Params);
+    IntegraNfse := TIntegraNfse.Create(Params);
     try
-      Payload := TJSONObject.Create;
-      try
-        Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
-        Resp := NFse.Consulta(Payload);
-        ShowMessage(Resp);
-      finally
-        Payload.Free;
-      end;
+      Resp := IntegraNfse.Offline;
+
+      ShowMessage(Resp);
     finally
-      NFse.Free;
+      IntegraNfse.Free;
     end;
   finally
     Params.Free;
@@ -70,4 +62,3 @@ begin
 end;
 
 end.
-

@@ -8,7 +8,7 @@ uses
 type
   ENfeException = class(EBaseException);
 
-  TNfe = class(TBase)
+  TIntegraNfe = class(TBase)
   public
     function Cria(const Payload: TJSONObject): string;
     function Preview(const Payload: TJSONObject): string;
@@ -32,24 +32,24 @@ type
 
 implementation
 
-{ TNfe }
+{ TIntegraNfe }
 
-function TNfe.Cria(const Payload: TJSONObject): string;
+function TIntegraNfe.Cria(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe', Payload);
 end;
 
-function TNfe.Preview(const Payload: TJSONObject): string;
+function TIntegraNfe.Preview(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/preview', Payload);
 end;
 
-function TNfe.Status: string;
+function TIntegraNfe.Status: string;
 begin
   Result := FClient.Send('GET', '/nfe/status', nil);
 end;
 
-function TNfe.Consulta(const Payload: TJSONObject): string;
+function TIntegraNfe.Consulta(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -57,27 +57,27 @@ begin
   Result := FClient.Send('GET', Format('/nfe/%s', [Key]), nil);
 end;
 
-function TNfe.Busca(const Payload: TJSONObject): string;
+function TIntegraNfe.Busca(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/busca', Payload);
 end;
 
-function TNfe.Cancela(const Payload: TJSONObject): string;
+function TIntegraNfe.Cancela(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/cancela', Payload);
 end;
 
-function TNfe.Correcao(const Payload: TJSONObject): string;
+function TIntegraNfe.Correcao(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/correcao', Payload);
 end;
 
-function TNfe.Inutiliza(const Payload: TJSONObject): string;
+function TIntegraNfe.Inutiliza(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/inutiliza', Payload);
 end;
 
-function TNfe.Pdf(const Payload: TJSONObject): string;
+function TIntegraNfe.Pdf(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -85,7 +85,7 @@ begin
   Result := FClient.Send('GET', Format('/nfe/pdf/%s', [Key]), nil);
 end;
 
-function TNfe.Etiqueta(const Payload: TJSONObject): string;
+function TIntegraNfe.Etiqueta(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -93,17 +93,17 @@ begin
   Result := FClient.Send('GET', Format('/nfe/pdf/etiqueta/%s', [Key]), nil);
 end;
 
-function TNfe.Manifesta(const Payload: TJSONObject): string;
+function TIntegraNfe.Manifesta(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/manifesta', Payload);
 end;
 
-function TNfe.Backup(const Payload: TJSONObject): string;
+function TIntegraNfe.Backup(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/backup', Payload);
 end;
 
-function TNfe.Download(const Payload: TJSONObject): string;
+function TIntegraNfe.Download(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -111,27 +111,27 @@ begin
   Result := FClient.Send('GET', Format('/nfe/download/%s', [Key]), nil);
 end;
 
-function TNfe.Recebidas(const Payload: TJSONObject): string;
+function TIntegraNfe.Recebidas(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/recebidas', Payload);
 end;
 
-function TNfe.Interessado(const Payload: TJSONObject): string;
+function TIntegraNfe.Interessado(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/interessado', Payload);
 end;
 
-function TNfe.Importa(const Payload: TJSONObject): string;
+function TIntegraNfe.Importa(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/importa', Payload);
 end;
 
-function TNfe.Comprovante(const Payload: TJSONObject): string;
+function TIntegraNfe.Comprovante(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/comprovante', Payload);
 end;
 
-function TNfe.Cadastro(const Payload: TJSONObject): string;
+function TIntegraNfe.Cadastro(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/cadastro', Payload);
 end;

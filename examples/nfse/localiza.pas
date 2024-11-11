@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfceUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  NFce: TNfce;
+  IntegraNfse: TIntegraNfse;
 
 implementation
 
@@ -48,18 +48,33 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    NFce := TNfce.Create(Params);
+    IntegraNfse := TIntegraNfse.Create(Params);
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
-        Resp := NFce.Consulta(Payload);
+        Payload.AddPair('data_emissao_inicial', '2020-01-01');
+        Payload.AddPair('data_emissao_final', '2020-01-31');
+        Payload.AddPair('data_competencia_inicial', '2020-01-01');
+        Payload.AddPair('data_competencia_final', '2020-01-31');
+        Payload.AddPair('tomador_cnpj', TJSONNull.Create); // Pode ser nulo
+        Payload.AddPair('tomador_cpf', TJSONNull.Create); // Pode ser nulo
+        Payload.AddPair('tomador_im', TJSONNull.Create);  // Pode ser nulo
+        Payload.AddPair('nfse_numero', TJSONNull.Create); // Pode ser nulo
+        Payload.AddPair('nfse_numero_inicial', TJSONNull.Create); // Pode ser nulo
+        Payload.AddPair('nfse_numero_final', TJSONNull.Create); // Pode ser nulo
+        Payload.AddPair('rps_numero', '15');
+        Payload.AddPair('rps_serie', '0');
+        Payload.AddPair('rps_tipo', '1');
+        Payload.AddPair('pagina', '1');
+
+        Resp := IntegraNfse.Localiza(Payload);
+
         ShowMessage(Resp);
       finally
         Payload.Free;
       end;
     finally
-      NFce.Free;
+      IntegraNfse.Free;
     end;
   finally
     Params.Free;
@@ -67,4 +82,3 @@ begin
 end;
 
 end.
-

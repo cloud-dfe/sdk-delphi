@@ -8,7 +8,7 @@ uses
 type
   ECteException = class(EBaseException);
 
-  TCte = class(TBase)
+  TIntegraCte = class(TBase)
   public
     function Status: TJSONObject;
     function Consulta(const Payload: TJSONObject): string;
@@ -26,14 +26,14 @@ type
 
 implementation
 
-{ TCte }
+{ TIntegraCte }
 
-function TCte.Status: string;
+function TIntegraCte.Status: string;
 begin
   Result := FClient.Send('GET', '/cte/status', nil);
 end;
 
-function TCte.Consulta(const Payload: TJSONObject): string;
+function TIntegraCte.Consulta(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -41,7 +41,7 @@ begin
   Result := FClient.Send('GET', Format('/cte/%s', [Key]), nil);
 end;
 
-function TCte.Pdf(const Payload: TJSONObject): string;
+function TIntegraCte.Pdf(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -49,47 +49,47 @@ begin
   Result := FClient.Send('GET', Format('/cte/pdf/%s', [Key]), nil);
 end;
 
-function TCte.Cria(const Payload: TJSONObject): string;
+function TIntegraCte.Cria(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte', Payload);
 end;
 
-function TCte.Busca(const Payload: TJSONObject): string;
+function TIntegraCte.Busca(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/busca', Payload);
 end;
 
-function TCte.Cancela(const Payload: TJSONObject): string;
+function TIntegraCte.Cancela(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/cancela', Payload);
 end;
 
-function TCte.Correcao(const Payload: TJSONObject): string;
+function TIntegraCte.Correcao(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/correcao', Payload);
 end;
 
-function TCte.Inutiliza(const Payload: TJSONObject): string;
+function TIntegraCte.Inutiliza(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/inutiliza', Payload);
 end;
 
-function TCte.Backup(const Payload: TJSONObject): string;
+function TIntegraCte.Backup(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/backup', Payload);
 end;
 
-function TCte.Importa(const Payload: TJSONObject): string;
+function TIntegraCte.Importa(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/importa', Payload);
 end;
 
-function TCte.Preview(const Payload: TJSONObject): string;
+function TIntegraCte.Preview(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/preview', Payload);
 end;
 
-function TCte.Desacordo(const Payload: TJSONObject): string;
+function TIntegraCte.Desacordo(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cte/desacordo', Payload);
 end;

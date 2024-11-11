@@ -8,7 +8,7 @@ uses
 type
   EGnreException = class(EBaseException);
 
-  TGnre = class(TBase)
+  TIntegraGnre = class(TBase)
   public
     function Consulta(const Payload: TJSONObject): string;
     function Cria(const Payload: TJSONObject): string;
@@ -17,9 +17,9 @@ type
 
 implementation
 
-{ TGnre }
+{ TIntegraGnre }
 
-function TGnre.Consulta(const Payload: TJSONObject): string;
+function TIntegraGnre.Consulta(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -27,12 +27,12 @@ begin
   Result := FClient.Send('GET', Format('/gnre/%s', [Key]), nil);
 end;
 
-function TGnre.Cria(const Payload: TJSONObject): string;
+function TIntegraGnre.Cria(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/gnre', Payload);
 end;
 
-function TGnre.ConfigUf(const Payload: TJSONObject): string;
+function TIntegraGnre.ConfigUf(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/gnre/configuf', Payload);
 end;
