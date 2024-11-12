@@ -36,7 +36,7 @@ var
   JSONResp: TJSONObject;
   XMLValue: string;
 begin
-  FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjkyMjUsInVzciI6MzU3LCJ0cCI6MiwiaWF0IjoxNzMxMDgxMjIwfQ.ZaZmqm_fy9UVR_bAHq2Mu5RDBdfdL-_8ynzO4z6QcSU';
+  FToken := 'TOKEN DO EMITENTE';
   FAmbiente := 1;
   FTimeout := 60;
   FPort := 443;
@@ -54,7 +54,7 @@ begin
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('chave', '51241117048578000110905800000000061704401284');
+        Payload.AddPair('chave', 'COLOCAR SUA CHAVE');
         Resp := IntegraNfse.Consulta(Payload);
 
         Resp := UTF8ToString(Resp);
