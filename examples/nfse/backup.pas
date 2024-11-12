@@ -33,6 +33,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
   Params, Payload: TJSONObject;
+  JSONResp: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2;
@@ -54,10 +55,20 @@ begin
       try
         Payload.AddPair('ano', '2021');
         Payload.AddPair('mes', '2');
-        
+
         Resp := IntegraNfse.Backup(Payload);
-        
-        ShowMessage(Resp);
+        Resp := UTF8ToString(Resp);
+
+        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+        try
+          if Assigned(JSONResp) then
+            ShowMessage(JSONResp.Format)
+          else
+            ShowMessage('Erro ao converter a resposta para JSON');
+        finally
+          JSONResp.Free;
+        end;
+
       finally
         Payload.Free;
       end;

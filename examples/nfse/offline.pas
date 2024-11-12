@@ -32,7 +32,7 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params: TJSONObject;
+  Params, JSONResp: TJSONObject;
 begin
   FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjE1OTUsInVzciI6MTcwLCJ0cCI6MiwiaWF0IjoxNzE4MjAxOTA5fQ.HkOW2RGdi9vRQhckH_lkmHvw1O75ojnxdJCRcs6X2pY';
   FAmbiente := 2;
@@ -52,7 +52,18 @@ begin
     try
       Resp := IntegraNfse.Offline;
 
-      ShowMessage(Resp);
+      Resp := UTF8ToString(Resp);
+      JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+
+      try
+        if Assigned(JSONResp) then
+          ShowMessage(JSONResp.Format)
+        else
+          ShowMessage('Erro ao converter a resposta para JSON');
+      finally
+        JSONResp.Free;
+      end;
+
     finally
       IntegraNfse.Free;
     end;

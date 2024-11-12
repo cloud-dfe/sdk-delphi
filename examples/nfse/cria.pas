@@ -32,8 +32,10 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params, Payload: TJSONObject;
-  Tomador, Endereco, Servico, Itens, Intermediario, Obra: TJSONObject;
+  Params, Payload, Tomador, Endereco, Servico, Intermediario, Obra: TJSONObject;
+  JSONResp: TJSONObject;
+  Itens: TJSONArray;
+  Item: TJSONObject;
 begin
   FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjE1OTUsInVzciI6MTcwLCJ0cCI6MiwiaWF0IjoxNzE4MjAxOTA5fQ.HkOW2RGdi9vRQhckH_lkmHvw1O75ojnxdJCRcs6X2pY';
   FAmbiente := 2;
@@ -81,7 +83,7 @@ begin
         Servico.AddPair('codigo_municipio', '4119905');
         
         Itens := TJSONArray.Create;
-        var Item := TJSONObject.Create;
+        Item := TJSONObject.Create;
         Item.AddPair('codigo_tributacao_municipio', '10500');
         Item.AddPair('discriminacao', 'Exemplo Serviço');
         Item.AddPair('valor_servicos', '1.00');
@@ -111,8 +113,18 @@ begin
         Payload.AddPair('obra', Obra);
         
         Resp := IntegraNfse.Cria(Payload);
+        Resp := UTF8ToString(Resp);
+
+        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+        try
+          if Assigned(JSONResp) then
+            ShowMessage(JSONResp.Format)
+          else
+            ShowMessage('Erro ao converter a resposta para JSON');
+        finally
+          JSONResp.Free;
+        end;
         
-        ShowMessage(Resp);
       finally
         Payload.Free;
       end;

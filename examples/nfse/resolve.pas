@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfceUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
 
 type
   TForm1 = class(TForm)
@@ -29,10 +29,17 @@ implementation
 
 {$R *.dfm}
 
+// Função para garantir a conversão correta de UTF-8
+function EnsureUTF8(const S: string): string;
+begin
+  Result := UTF8ToString(AnsiString(S)); // Converte para UTF-8
+end;
+
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
   Params, Payload: TJSONObject;
+  JSONResp: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2;
@@ -53,8 +60,21 @@ begin
       Payload := TJSONObject.Create;
       try
         Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
+        
         Resp := IntegraNfse.Resolve(Payload);
-        ShowMessage(Resp);
+        
+        Resp := EnsureUTF8(Resp);
+
+        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+        try
+          if Assigned(JSONResp) then
+            ShowMessage('Resposta JSON: ' + JSONResp.Format)
+          else
+            ShowMessage('Erro ao converter a resposta para JSON');
+        finally
+          JSONResp.Free;
+        end;
+
       finally
         Payload.Free;
       end;
@@ -67,4 +87,3 @@ begin
 end;
 
 end.
-

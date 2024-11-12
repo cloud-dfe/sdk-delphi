@@ -34,8 +34,9 @@ var
   Resp: string;
   Params, Payload: TJSONObject;
   JSONResp: TJSONObject;
+  XMLValue: string;
 begin
-  FToken := 'TokenDoEmitente';
+  FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjkyMjUsInVzciI6MzU3LCJ0cCI6MiwiaWF0IjoxNzMxMDgxMjIwfQ.ZaZmqm_fy9UVR_bAHq2Mu5RDBdfdL-_8ynzO4z6QcSU';
   FAmbiente := 2;
   FTimeout := 60;
   FPort := 443;
@@ -53,14 +54,24 @@ begin
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
+        Payload.AddPair('chave', '51241117048578000110905800000000061704401284');
         Resp := IntegraNfse.Consulta(Payload);
 
-        // Converte a string de resposta em um objeto JSON
+        Resp := UTF8ToString(Resp);
+
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then
-            ShowMessage(JSONResp.Format)  // Exibe o JSON formatado
+          begin
+            if JSONResp.TryGetValue('xml', XMLValue) then
+            begin
+              ShowMessage('Conteúdo da chave "xml": ' + XMLValue);
+            end
+            else
+            begin
+              ShowMessage('Chave "xml" não encontrada no JSON');
+            end;
+          end
           else
             ShowMessage('Erro ao converter a resposta para JSON');
         finally
