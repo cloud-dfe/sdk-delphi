@@ -39,18 +39,21 @@ end;
 class function TIntegraUtil.ReadFile(const FileName: string): string;
 var
   FileStream: TFileStream;
+  StringStream: TStringStream;
 begin
   try
     FileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+    StringStream := TStringStream.Create('', TEncoding.UTF8);
     try
-      SetLength(Result, FileStream.Size);
-      FileStream.ReadBuffer(Result[1], FileStream.Size);
+      StringStream.CopyFrom(FileStream, FileStream.Size);
+      Result := StringStream.DataString;
     finally
       FileStream.Free;
+      StringStream.Free;
     end;
   except
     on E: Exception do
-      raise Exception.Create('Erro ao ler o arquivo: ' + E.Message);
+      raise Exception.Create('Erro ao ler o arquivo em UTF8: ' + E.Message);
   end;
 end;
 
