@@ -2,8 +2,8 @@
 <BorlandProject>
 	<Transactions>
     <Transaction>2024/11/07 09:52:37.000.439,=D:\IntegraNotas\Delphi\Unit1.pas</Transaction>
-    <Transaction>2024/11/07 09:54:19.000.612,D:\IntegraNotas\Delphi\Unit1.dfm=D:\IntegraNotas\SDKs\sdk-delphi\SDKUnit.dfm</Transaction>
-    <Transaction>2024/11/07 09:54:19.000.612,D:\IntegraNotas\Delphi\Unit1.pas=D:\IntegraNotas\SDKs\sdk-delphi\SDKUnit.pas</Transaction>
-    <Transaction>2024/11/07 09:58:20.000.931,D:\IntegraNotas\Delphi\Project1.dproj=D:\IntegraNotas\SDKs\sdk-delphi\SDKProject.dproj</Transaction>
+    <Transaction>2024/11/07 09:54:19.000.612,D:\IntegraNotas\SDKs\sdk-delphi\SDKUnit.pas=D:\IntegraNotas\Delphi\Unit1.pas</Transaction>
+    <Transaction>2024/11/07 09:54:19.000.612,D:\IntegraNotas\SDKs\sdk-delphi\SDKUnit.dfm=D:\IntegraNotas\Delphi\Unit1.dfm</Transaction>
+    <Transaction>2024/11/07 09:58:20.000.931,D:\IntegraNotas\SDKs\sdk-delphi\SDKProject.dproj=D:\IntegraNotas\Delphi\Project1.dproj</Transaction>
   </Transactions>
 </BorlandProject>
