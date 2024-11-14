@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit, UtilUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit;
 
 type
   TForm1 = class(TForm)
@@ -18,12 +18,6 @@ type
 
 var
   Form1: TForm1;
-  FToken: string;
-  FAmbiente: Integer;
-  FTimeout: Integer;
-  FPort: Integer;
-  FDebug: Boolean;
-  IntegraNfse: TIntegraNfse;
 
 implementation
 
@@ -31,69 +25,30 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  Resp: string;
-  Params, Payload: TJSONObject;
-  JSONResp: TJSONObject;
-  PDFBase64: string;
-  PDFFileName: string;
+  Base64String: string;
+  DecodedBytes: TBytes;
+  FilePath: string;
 begin
-  // Exemplo de token e configurações
-  FToken := 'TokenDoEmitente';
-  FAmbiente := 1;
-  FTimeout := 60;
-  FPort := 443;
-  FDebug := False;
-
-  Params := TJSONObject.Create;
+  // Defina a string Base64 para decodificar
+  Base64String := 'SGVsbG8gd29ybGQh'; // "Hello world!" em Base64
+  
   try
-    Params.AddPair('token', FToken);
-    Params.AddPair('ambiente', TJSONNumber.Create(FAmbiente));
-    Params.AddPair('timeout', TJSONNumber.Create(FTimeout));
-    Params.AddPair('port', TJSONNumber.Create(FPort));
-    Params.AddPair('debug', TJSONBool.Create(FDebug));
+    // Chame o método DecodeToBytes para obter os bytes decodificados
+    DecodedBytes := TIntegraUtil.DecodeToBytes(Base64String);
+    
+    // Defina o caminho para salvar os bytes decodificados em um arquivo (por exemplo, um arquivo de texto)
+    FilePath := 'D:\IntegraNotas\SDKs\sdk-delphi\teste.pdf';
 
-    IntegraNfse := TIntegraNfse.Create(Params);
-    try
-      Payload := TJSONObject.Create;
-      try
-        Payload.AddPair('chave', 'Chave');
-        Resp := IntegraNfse.Consulta(Payload);
-
-        Resp := UTF8ToString(Resp);
-
-        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
-        try
-          if Assigned(JSONResp) then
-          begin
-            // Obtém o valor do PDF base64 da resposta JSON
-            PDFBase64 := TIntegraUtil.GetValueFromJson(JSONResp, 'pdf');
-            if PDFBase64 <> '' then
-            begin
-              // Decodifica e salva o PDF
-              PDFFileName := 'Diretorio a ser salvo'; // Defina o caminho desejado
-              TIntegraUtil.DecodeToPDF(PDFBase64, PDFFileName);
-              ShowMessage('PDF salvo com sucesso em: ' + PDFFileName);
-            end
-            else
-            begin
-              ShowMessage('Chave "pdf" não encontrada ou vazia');
-            end;
-          end
-          else
-            ShowMessage('Erro ao converter a resposta para JSON');
-        finally
-          JSONResp.Free;
-        end;
-
-      finally
-        Payload.Free;
-      end;
-    finally
-      IntegraNfse.Free;
-    end;
-  finally
-    Params.Free;
+    // Salve os bytes decodificados em um arquivo usando o método SavePDF (você pode usar SaveFile também, dependendo do tipo de dados)
+    TIntegraUtil.SavePDF(DecodedBytes, FilePath);
+    
+    // Exiba uma mensagem de sucesso
+    ShowMessage('Arquivo salvo com sucesso após a decodificação!');
+  except
+    on E: Exception do
+      ShowMessage('Erro ao decodificar os dados: ' + E.Message);
   end;
 end;
+
 
 end.
