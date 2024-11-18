@@ -28,15 +28,11 @@ var
   EncodedString: string;
   DecodedString: string;
 begin
-  // Definindo uma string codificada em Base64 para decodificação
   EncodedString := 'RXN0ZSBfJWV4ZW1wbG9fJWUgdGV4dG8gZW0gQmFzZTY0Lg==';
 
-  // Utilizando a função Decode para decodificar a string
   DecodedString := TIntegraUtil.Decode(EncodedString);
 
-  // Exibindo o resultado da decodificação
-  ShowMessage('Texto codificado (Base64): ' + EncodedString + sLineBreak +
-              'Texto decodificado: ' + DecodedString);
+  ShowMessage('Texto decodificado: ' + DecodedString);
 end;
 
 end.

@@ -31,7 +31,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  Resp: string;
+  Resp, FileContent, XMLBase64: string;
   Params, Payload: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
@@ -52,14 +52,23 @@ begin
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('chave', '51241117048578000110905800000000061704401284');
-        Resp := IntegraNfse.Consulta(Payload);
+        try
+          FileContent := TIntegraUtil.ReadFile('caminho_do_arquivo.xml');
+          if FileContent.IsEmpty then
+            raise Exception.Create('O conteúdo do arquivo está vazio.');
 
-        Resp := UTF8ToString(Resp);
+          XMLBase64 := TIntegraUtil.Encode(FileContent);
 
-        // Exibe a resposta JSON inteira
-        ShowMessage('Resposta completa do JSON: ' + sLineBreak + Resp);
+          Payload.AddPair('chave', '51241117048578000110905800000000061704401284');
+          Payload.AddPair('xml', XMLBase64);
 
+          Resp := IntegraNfse.Consulta(Payload);
+
+          ShowMessage('Retorno do JSON: ' + Resp);
+        except
+          on E: Exception do
+            ShowMessage('Erro ao processar: ' + E.Message);
+        end;
       finally
         Payload.Free;
       end;

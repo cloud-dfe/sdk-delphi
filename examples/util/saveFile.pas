@@ -29,12 +29,10 @@ var
   Content: string;
 begin
   
-  FilePath := 'D:\IntegraNotas\SDKs\sdk-delphi\teste.txt';
+  FilePath := 'caminho_do_arquivo';
   
-  // Defina o conteúdo que você deseja salvar no arquivo
-  Content := 'Este é um exemplo de texto a ser salvo no arquivo.';
+  Content := 'Conteúdo do arquivo';
 
-  // Chame o método SaveFile para salvar o conteúdo no arquivo especificado
   try
     TIntegraUtil.SaveFile(Content, FilePath);
     ShowMessage('Arquivo salvo com sucesso!');

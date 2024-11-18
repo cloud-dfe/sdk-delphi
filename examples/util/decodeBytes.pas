@@ -32,7 +32,6 @@ begin
   
   try
     DecodedBytes := TIntegraUtil.DecodeToBytes(Base64String);
-    // DecodedBytes contém os bytes decodificados porém esses dados não podem ser exibidos diretamente em um ShowMessage
     
     ShowMessage('Decodificação feita com sucesso!');
   except

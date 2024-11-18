@@ -29,12 +29,12 @@ var
   DecodedBytes: TBytes;
   FilePath: string;
 begin
-  Base64String := 'STRING EM BASE64 DO PDF';
+  Base64String := 'STRING CODIFICADA EM BASE64';
   
   try
     DecodedBytes := TIntegraUtil.DecodeToBytes(Base64String);
     
-    FilePath := 'CAMINHO PARA SALVAR O PDF';
+    FilePath := 'caminho_do_arquivo.pdf';
 
     TIntegraUtil.SavePDF(DecodedBytes, FilePath);
     

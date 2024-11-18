@@ -28,7 +28,7 @@ var
   FileName: string;
   FileContent: string;
 begin
-  FileName := 'C:\BACKUP\teste.txt';
+  FileName := 'caminho_do_arquivo';
 
   try
     FileContent := TIntegraUtil.ReadFile(FileName);

@@ -28,22 +28,16 @@ var
   JSONObject: TJSONObject;
   KeyValue: string;
 begin
-  // Criando um objeto JSON de exemplo
   JSONObject := TJSONObject.Create;
   try
-    // Adicionando pares chave-valor ao JSON
-    JSONObject.AddPair('nome', 'João');
-    JSONObject.AddPair('idade', TJSONNumber.Create(30));
-    JSONObject.AddPair('cidade', 'São Paulo');
+    JSONObject.AddPair('exemplo', 'valor da chave');
 
-    // Utilizando a função GetValueFromJson para obter o valor da chave "cidade"
-    KeyValue := TIntegraUtil.GetValueFromJson(JSONObject, 'cidade');
+    KeyValue := TIntegraUtil.GetValueFromJson(JSONObject, 'exemplo');
 
-    // Exibindo o valor da chave
     if KeyValue <> '' then
-      ShowMessage('Valor da chave "cidade": ' + KeyValue)
+      ShowMessage('Valor da chave: ' + KeyValue)
     else
-      ShowMessage('Chave "cidade" não encontrada ou está vazia');
+      ShowMessage('Não foi possível encontrar o valor da chave.');
   finally
     JSONObject.Free;
   end;

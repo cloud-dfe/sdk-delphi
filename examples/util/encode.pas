@@ -28,15 +28,11 @@ var
   InputString: string;
   EncodedString: string;
 begin
-  // Definindo uma string de exemplo para codificação
   InputString := 'Este é um exemplo de texto para codificação Base64.';
 
-  // Utilizando a função Encode para codificar a string
   EncodedString := TIntegraUtil.Encode(InputString);
 
-  // Exibindo o resultado da codificação
-  ShowMessage('Texto original: ' + InputString + sLineBreak +
-              'Texto codificado (Base64): ' + EncodedString);
+  ShowMessage('Texto codificado (Base64): ' + EncodedString);
 end;
 
 end.
