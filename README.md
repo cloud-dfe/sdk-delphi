@@ -13,7 +13,7 @@ O SDK-Delphi foi desenvolvido para facilitar a integração do seu sistema com n
 ### 1. Baixando o SDK
 Para simplificar o processo, disponibilizamos um arquivo ZIP com todo o código do SDK. Você pode encontrar o ZIP na pasta SDK-Units ou botão abaixo:
 
-[![Baixar SDK](https://img.shields.io/badge/Baixar%20SDK-Click%20Aqui-blue)](https://github.com/cloud-dfe/sdk-delphi/raw/refs/heads/master/SDK-Units/SDKUnits.zip)
+[![Baixar SDK](https://img.shields.io/badge/Baixar%20SDK-Click%20Aqui-blue)](https://github.com/cloud-dfe/sdk-delphi/raw/refs/heads/master/.SDK-Units/SDKUnits.zip)
 
 ### 2. Após baixar o arquivo ZIP: 
    - Extraia seu conteúdo para uma pasta local de sua preferência.
@@ -29,7 +29,7 @@ Após incluir os arquivos .pas no seu projeto, eles já estarão prontos para us
    Se ao executar o código utilizando o SDK e ocorreu o erro **"Could not load SSL library"**, siga os passos abaixo para resolver o problema:
 
 ### 1. Baixe as DLLs:  
-   Clicando no link abaixo você estava fazendo o download de um arquivo ZIP das DLLs: 
+   Clicando no botão abaixo você estava fazendo o download de um arquivo ZIP das DLLs: 
    
    [![Baixar DLLs](https://img.shields.io/badge/Baixar%20DLLs-Click%20Aqui-blue)](https://github.com/cloud-dfe/sdk-delphi/raw/refs/heads/master/utils/Dlls.zip)
 
