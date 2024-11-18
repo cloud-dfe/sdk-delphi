@@ -4,22 +4,28 @@ O SDK-Delphi foi desenvolvido para facilitar a integração do seu sistema com n
 
 ## Funcionalidades do SDK
 
-- **Integração rápida** com a API
-- **Classes e métodos otimizados** para operações comuns
-- **Redução de esforço** com implementação manual de comunicação HTTP
+- Integração rápida com a API
+- Redução de esforço com implementação manual de comunicação HTTP
+- Impedir erros de preenchimento de URLS ou métodos
 
 ---
 
 ## Como baixar e configurar o SDK-Delphi
 
-### 1. Baixar o SDK
-1. Acesse o repositório no GitHub, na pasta [SDK-Units](https://github.com/cloud-dfe/sdk-delphi/tree/master/SDK-Units).
-2. Faça o download de todos os arquivos presentes nessa pasta clicando no botão **"Code"** e selecionando a opção **"Download ZIP"** ou baixando os arquivos individualmente.
-3. Extraia os arquivos do ZIP (se aplicável) e adicione-os ao seu projeto Delphi.
+### 1. Baixando o SDK
+Para simplificar o processo, disponibilizamos um arquivo ZIP com todo o código do SDK. Você pode encontrar o ZIP na pasta SDK-Units ou no link abaixo:
 
-### 2. Configurar bibliotecas necessárias para HTTPS
+### [**DOWNLOAD**](https://github.com/cloud-dfe/sdk-delphi/raw/refs/heads/master/SDK-Units/SDKUnits.zip)
 
-Se ao executar o SDK você encontrar o erro **"Could not load SSL library"**, siga os passos abaixo para resolver o problema:
+2. Após baixar o arquivo ZIP: 
+   - Extraia seu conteúdo para uma pasta local de sua preferência.
+   - Copie os arquivos .pas (as Units do SDK) para o diretório do seu projeto Delphi.
+
+3. Após incluir os arquivos .pas no seu projeto, eles já estarão prontos para uso. Basta testa-lo para ver se estão inserido corretamentes em seu projeto.
+
+### 2. Configurando Dlls caso ocorra o erro
+
+Se ao executar o código utilizando o SDK e ocorreu o erro **"Could not load SSL library"**, siga os passos abaixo para resolver o problema:
 
 1. **Baixe as bibliotecas necessárias (DLLs):**  
    Acesse este link para fazer o download das DLLs necessárias: [Baixar DLLs](link).
