@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteOSUnit;
 
 type
     TForm1 = class(TForm)
@@ -23,7 +23,7 @@ var
     FTimeout: Integer;
     FPort: Integer;
     FDebug: Boolean;
-    IntegraCte: TIntegraCte;
+    IntegraCteOS: TIntegraCteOS;
 
 implementation
 
@@ -49,7 +49,7 @@ begin
         Params.AddPair('port', TJSONNumber.Create(FPort));
         Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-        IntegraCte := TIntegraCte.Create(Params);
+        IntegraCteOS := TIntegraCteOS.Create(Params);
 
         try
             Payload := TJSONObject.Create;
@@ -57,7 +57,7 @@ begin
                 Payload.AddPair('ano', '2021');
                 Payload.AddPair('mes', '2');
 
-                Resp := IntegraCte.Backup(Payload);
+                Resp := IntegraCteOS.Backup(Payload);
                 Resp := UTF8ToString(Resp);
 
                 JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
@@ -74,7 +74,7 @@ begin
                 end;
 
             finally
-                IntegraCte.Free;
+                IntegraCteOS.Free;
             end;
             
         finally
