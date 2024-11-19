@@ -34,8 +34,8 @@ var
   Resp: string;
   Params, Payload, JSONResp: TJSONObject;
 begin
-  FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjE1OTUsInVzciI6MTcwLCJ0cCI6MiwiaWF0IjoxNzE4MjAxOTA5fQ.HkOW2RGdi9vRQhckH_lkmHvw1O75ojnxdJCRcs6X2pY';
-  FAmbiente := 2;
+  FToken := 'TokenDoEmitente';
+  FAmbiente := 2; // 1 - Produção, 2 - Homologação
   FTimeout := 60;
   FPort := 443;
   FDebug := False;
@@ -56,12 +56,12 @@ begin
         Payload.AddPair('data_emissao_final', '2020-01-31');
         Payload.AddPair('data_competencia_inicial', '2020-01-01');
         Payload.AddPair('data_competencia_final', '2020-01-31');
-        Payload.AddPair('tomador_cnpj', TJSONNull.Create); // Pode ser nulo
-        Payload.AddPair('tomador_cpf', TJSONNull.Create); // Pode ser nulo
-        Payload.AddPair('tomador_im', TJSONNull.Create);  // Pode ser nulo
-        Payload.AddPair('nfse_numero', TJSONNull.Create); // Pode ser nulo
-        Payload.AddPair('nfse_numero_inicial', TJSONNull.Create); // Pode ser nulo
-        Payload.AddPair('nfse_numero_final', TJSONNull.Create); // Pode ser nulo
+        Payload.AddPair('tomador_cnpj', TJSONNull.Create);
+        Payload.AddPair('tomador_cpf', TJSONNull.Create);
+        Payload.AddPair('tomador_im', TJSONNull.Create);
+        Payload.AddPair('nfse_numero', TJSONNull.Create);
+        Payload.AddPair('nfse_numero_inicial', TJSONNull.Create);
+        Payload.AddPair('nfse_numero_final', TJSONNull.Create);
         Payload.AddPair('rps_numero', '15');
         Payload.AddPair('rps_serie', '0');
         Payload.AddPair('rps_tipo', '1');

@@ -35,7 +35,7 @@ var
   Params, Payload: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
-  FAmbiente := 2;
+  FAmbiente := 2; // 1 - Produção, 2 - Homologação
   FTimeout := 60;
   FPort := 443;
   FDebug := False;

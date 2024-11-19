@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteOSUnit, System.JSON;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraNfse: TIntegraNfse;
+  IntegraCteOS: TIntegraCteOS;
 
 implementation
 
@@ -32,7 +32,7 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params, JSONResp: TJSONObject;
+  Params, Payload, JSONResp: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2; // 1 - Produção, 2 - Homologação
@@ -48,25 +48,35 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraNfse := TIntegraNfse.Create(Params);
+    IntegraCteOS := TIntegraCteOS.Create(Params);
+
     try
-      Resp := IntegraNfse.Offline;
-
-      Resp := UTF8ToString(Resp);
-      JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
-
+      Payload := TJSONObject.Create;
       try
-        if Assigned(JSONResp) then
-          ShowMessage(JSONResp.Format)
-        else
-          ShowMessage('Erro ao converter a resposta para JSON');
+        Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
+        Payload.AddPair('justificativa', 'nao contratei esse servico');
+
+        Resp := IntegraCteOS.Desacordo(Payload);
+        Resp := UTF8ToString(Resp);
+
+        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+        try
+          if Assigned(JSONResp) then
+            ShowMessage(JSONResp.Format)
+          else
+            ShowMessage('Erro ao converter a resposta para JSON');
+        finally
+          JSONResp.Free;
+        end;
+
       finally
-        JSONResp.Free;
+        Payload.Free;
       end;
 
     finally
-      IntegraNfse.Free;
+      IntegraCteOS.Free;
     end;
+
   finally
     Params.Free;
   end;

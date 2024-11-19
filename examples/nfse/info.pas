@@ -34,8 +34,8 @@ var
   Resp: string;
   Params, Payload, JSONResp: TJSONObject;
 begin
-  FToken := 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbXAiOjE1OTUsInVzciI6MTcwLCJ0cCI6MiwiaWF0IjoxNzE4MjAxOTA5fQ.HkOW2RGdi9vRQhckH_lkmHvw1O75ojnxdJCRcs6X2pY';
-  FAmbiente := 2;
+  FToken := 'TokenDoEmitente';
+  FAmbiente := 2; // 1 - Produção, 2 - Homologação
   FTimeout := 60;
   FPort := 443;
   FDebug := False;

@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteOSUnit, System.JSON;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraNfse: TIntegraNfse;
+  IntegraCteOS: TIntegraCteOS;
 
 implementation
 
@@ -32,8 +32,7 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params, Payload: TJSONObject;
-  JSONResp: TJSONObject;
+  Params, Payload, JSONResp: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2; // 1 - Produção, 2 - Homologação
@@ -49,15 +48,21 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraNfse := TIntegraNfse.Create(Params);
+    IntegraCteOS := TIntegraCteOS.Create(Params);
+
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('numero_rps_inicial', TJSONNumber.Create(15));
-        Payload.AddPair('numero_rps_final', TJSONNumber.Create(15));
-        Payload.AddPair('serie_rps', '0');
-        
-        Resp := IntegraNfse.Busca(Payload);
+        Payload.AddPair('numero_inicial', TJSONNumber.Create(1210));
+        Payload.AddPair('numero_final', TJSONNumber.Create(1210));
+        Payload.AddPair('serie', TJSONNumber.Create(1));
+        Payload.AddPair('data_inicial', '2019-12-01');
+        Payload.AddPair('data_final', '2019-12-31');
+        Payload.AddPair('cancel_inicial', '2019-12-01');
+        Payload.AddPair('cancel_final', '2019-12-31');
+        Payload.AddPair('status', '1');
+
+        Resp := IntegraCteOS.Busca(Payload);
         Resp := UTF8ToString(Resp);
 
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
@@ -73,9 +78,11 @@ begin
       finally
         Payload.Free;
       end;
+
     finally
-      IntegraNfse.Free;
+      IntegraCteOS.Free;
     end;
+
   finally
     Params.Free;
   end;

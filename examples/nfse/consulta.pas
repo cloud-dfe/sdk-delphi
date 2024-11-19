@@ -35,7 +35,7 @@ var
   Params, Payload: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
-  FAmbiente := 2;
+  FAmbiente := 2; // 1 - Produção, 2 - Homologação
   FTimeout := 60;
   FPort := 443;
   FDebug := False;
@@ -52,12 +52,11 @@ begin
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('chave', '51241117048578000110905800000000061704401284');
+        Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
         Resp := IntegraNfse.Consulta(Payload);
 
         Resp := UTF8ToString(Resp);
 
-        // Exibe a resposta JSON inteira
         ShowMessage('Resposta completa do JSON: ' + sLineBreak + Resp);
 
       finally

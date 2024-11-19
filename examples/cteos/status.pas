@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteOSUnit, System.JSON;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraNfse: TIntegraNfse;
+  IntegraCteOS: TIntegraCteOS;
 
 implementation
 
@@ -48,25 +48,21 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraNfse := TIntegraNfse.Create(Params);
+    IntegraCteOS := TIntegraCteOS.Create(Params);
+
     try
-      Resp := IntegraNfse.Offline;
-
+      Resp := IntegraCteOS.Status;
       Resp := UTF8ToString(Resp);
-      JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
 
-      try
-        if Assigned(JSONResp) then
-          ShowMessage(JSONResp.Format)
-        else
-          ShowMessage('Erro ao converter a resposta para JSON');
-      finally
-        JSONResp.Free;
-      end;
+      if Resp <> '' then
+        ShowMessage('Status retornado: ' + Resp)
+      else
+        ShowMessage('Erro ao obter status');
 
     finally
-      IntegraNfse.Free;
+      IntegraCteOS.Free;
     end;
+
   finally
     Params.Free;
   end;

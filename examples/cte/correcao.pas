@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteUnit, System.JSON;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraNfse: TIntegraNfse;
+  IntegraCte: TIntegraCte;
 
 implementation
 
@@ -32,8 +32,7 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params, Payload: TJSONObject;
-  JSONResp: TJSONObject;
+  Params, Payload, CorrecoesArray, CorrecaoItem, JSONResp: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2; // 1 - Produção, 2 - Homologação
@@ -49,15 +48,25 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraNfse := TIntegraNfse.Create(Params);
+    IntegraCte := TIntegraCte.Create(Params);
+
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('numero_rps_inicial', TJSONNumber.Create(15));
-        Payload.AddPair('numero_rps_final', TJSONNumber.Create(15));
-        Payload.AddPair('serie_rps', '0');
+        Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
         
-        Resp := IntegraNfse.Busca(Payload);
+        CorrecoesArray := TJSONArray.Create;
+        
+        CorrecaoItem := TJSONObject.Create;
+        CorrecaoItem.AddPair('grupo_corrigido', 'ide');
+        CorrecaoItem.AddPair('campo_corrigido', 'natOp');
+        CorrecaoItem.AddPair('valor_corrigido', 'PRESTACAO DE SERVIÇO');
+        
+        CorrecoesArray.Add(CorrecaoItem);
+        
+        Payload.AddPair('correcoes', CorrecoesArray);
+
+        Resp := IntegraCte.Correcao(Payload);
         Resp := UTF8ToString(Resp);
 
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
@@ -73,9 +82,11 @@ begin
       finally
         Payload.Free;
       end;
+
     finally
-      IntegraNfse.Free;
+      IntegraCte.Free;
     end;
+
   finally
     Params.Free;
   end;

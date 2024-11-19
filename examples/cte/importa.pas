@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteUnit, System.JSON;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +23,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraNfse: TIntegraNfse;
+  IntegraCte: TIntegraCte;
 
 implementation
 
@@ -32,7 +32,8 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params, JSONResp: TJSONObject;
+  Params, Payload, JSONResp: TJSONObject;
+  XMLBase64: string;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2; // 1 - Produção, 2 - Homologação
@@ -48,25 +49,42 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraNfse := TIntegraNfse.Create(Params);
+    IntegraCte := TIntegraCte.Create(Params);
+
     try
-      Resp := IntegraNfse.Offline;
-
-      Resp := UTF8ToString(Resp);
-      JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
-
       try
-        if Assigned(JSONResp) then
-          ShowMessage(JSONResp.Format)
-        else
-          ShowMessage('Erro ao converter a resposta para JSON');
+        XMLBase64 := TIntegraUtil.ReadFile('caminho_do_arquivo.xml');
+        XMLBase64 := TIntegraUtil.Encode(XMLBase64);
+      except
+        on E: Exception do
+          ShowMessage('Erro ao ler ou codificar o arquivo: ' + E.Message);
+      end;
+
+      Payload := TJSONObject.Create;
+      try
+        Payload.AddPair('xml', XMLBase64);
+
+        Resp := IntegraCte.Importa(Payload);
+        Resp := UTF8ToString(Resp);
+
+        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+        try
+          if Assigned(JSONResp) then
+            ShowMessage(JSONResp.Format)
+          else
+            ShowMessage('Erro ao converter a resposta para JSON');
+        finally
+          JSONResp.Free;
+        end;
+
       finally
-        JSONResp.Free;
+        Payload.Free;
       end;
 
     finally
-      IntegraNfse.Free;
+      IntegraCte.Free;
     end;
+
   finally
     Params.Free;
   end;

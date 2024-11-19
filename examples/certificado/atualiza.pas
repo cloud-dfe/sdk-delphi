@@ -3,8 +3,9 @@ unit SDKUnit;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, NfseUnit;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  System.JSON, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, 
+  UtilUnit, CertificadoUnit;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +24,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraNfse: TIntegraNfse;
+  IntegraCertificado: TIntegraCertificado;
 
 implementation
 
@@ -31,7 +32,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  Resp: string;
+  Resp, PFXBase64: string;
   Params, Payload: TJSONObject;
   JSONResp: TJSONObject;
 begin
@@ -49,15 +50,26 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraNfse := TIntegraNfse.Create(Params);
+    IntegraCertificado := TIntegraCertificado.Create(Params);
+
     try
+      try
+        PFXBase64 := TIntegraUtil.ReadFile('caminho_do_arquivo.pfx');
+        PFXBase64 := TIntegraUtil.Encode(PFXBase64);
+      except
+        on E: Exception do
+        begin
+          ShowMessage('Erro ao ler o arquivo: ' + E.Message);
+          Exit;
+        end;
+      end;
+
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('numero_rps_inicial', TJSONNumber.Create(15));
-        Payload.AddPair('numero_rps_final', TJSONNumber.Create(15));
-        Payload.AddPair('serie_rps', '0');
-        
-        Resp := IntegraNfse.Busca(Payload);
+        Payload.AddPair('certificado', PFXBase64);
+        Payload.AddPair('senha', 'senha');
+
+        Resp := IntegraCertificado.Atualiza(Payload);
         Resp := UTF8ToString(Resp);
 
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
@@ -69,13 +81,14 @@ begin
         finally
           JSONResp.Free;
         end;
-
       finally
         Payload.Free;
       end;
+
     finally
-      IntegraNfse.Free;
+      IntegraCertificado.Free;
     end;
+
   finally
     Params.Free;
   end;
