@@ -160,7 +160,9 @@ begin
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then
-            ShowMessage(JSONResp.Format)
+          begin
+            ProcessaCteResposta(Resp);
+          end
           else
             ShowMessage('Erro ao converter a resposta para JSON');
         finally
@@ -177,6 +179,109 @@ begin
 
   finally
     Params.Free;
+  end;
+end;
+
+procedure TForm1.ProcessaCteResposta(const RespJSON: string);
+var
+  JSONResp, Payload, ConsultaResp: TJSONObject;
+  Chave: string;
+  Codigo, Tentativa: Integer;
+  Sucesso: Boolean;
+begin
+  JSONResp := TJSONObject.ParseJSONValue(RespJSON) as TJSONObject;
+  try
+    if Assigned(JSONResp) then
+    begin
+      Sucesso := JSONResp.GetValue<Boolean>('sucesso');
+      Codigo := JSONResp.GetValue<Integer>('codigo');
+      
+      if Sucesso then
+      begin
+        Chave := JSONResp.GetValue<string>('chave');
+        Sleep(5000);
+        Tentativa := 1;
+
+        while Tentativa <= 5 do
+        begin
+          Payload := TJSONObject.Create;
+          try
+            Payload.AddPair('chave', Chave);
+            ConsultaResp := TJSONObject.ParseJSONValue(IntegraCteOS.Consulta(Payload)) as TJSONObject;
+            try
+              if Assigned(ConsultaResp) then
+              begin
+                Codigo := ConsultaResp.GetValue<Integer>('codigo');
+                Sucesso := ConsultaResp.GetValue<Boolean>('sucesso');
+                if Codigo <> 5023 then
+                begin
+                  if Sucesso then
+                  begin
+                    ShowMessage('CT-e autorizado: ' + ConsultaResp.Format);
+                  end
+                  else
+                  begin
+                    ShowMessage('CT-e rejeitado: ' + ConsultaResp.Format);
+                  end;
+                  Break;
+                end;
+              end;
+            finally
+              ConsultaResp.Free;
+            end;
+          finally
+            Payload.Free;
+          end;
+          Sleep(5000);
+          Inc(Tentativa);
+        end;
+      end
+      else if (Codigo = 5001) or (Codigo = 5002) then
+      begin
+        ShowMessage('Erro nos campos: ' + JSONResp.GetValue<TJSONArray>('erros').ToString);
+      end
+      else if (Codigo = 5008) or (Codigo >= 7000) then
+      begin
+        Chave := JSONResp.GetValue<string>('chave');
+        ShowMessage('Erro de timeout ou conexão. Sincronizando documento.');
+
+        Payload := TJSONObject.Create;
+        try
+          Payload.AddPair('chave', Chave);
+          ConsultaResp := TJSONObject.ParseJSONValue(IntegraCteOS.Consulta(Payload)) as TJSONObject;
+          try
+            if Assigned(ConsultaResp) then
+            begin
+              Sucesso := ConsultaResp.GetValue<Boolean>('sucesso');
+              Codigo := ConsultaResp.GetValue<Integer>('codigo');
+
+              if Sucesso and (Codigo = 5023) then
+              begin
+                ShowMessage('CT-e autorizado: ' + ConsultaResp.Format);
+              end
+              else
+              begin
+                ShowMessage('CT-e rejeitado: ' + ConsultaResp.Format);
+              end;
+            end;
+          finally
+            ConsultaResp.Free;
+          end;
+        finally
+          Payload.Free;
+        end;
+      end
+      else
+      begin
+        ShowMessage('CT-e rejeitado: ' + JSONResp.Format);
+      end;
+    end
+    else
+    begin
+      ShowMessage('Erro ao interpretar resposta JSON');
+    end;
+  finally
+    JSONResp.Free;
   end;
 end;
 
