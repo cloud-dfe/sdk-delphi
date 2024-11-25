@@ -36,8 +36,8 @@ var
   Params, Payload, JSONResp: TJSONObject;
   XMLBase64, XMLFile: string;
 begin
-  FToken := 'TokenDoEmitente'; // 1 - Produção, 2 - Homologação
-  FAmbiente := 2;
+  FToken := 'TokenDoEmitente';
+  FAmbiente := 2; // 1 - Produção, 2 - Homologação
   FTimeout := 60;
   FPort := 443;
   FDebug := False;

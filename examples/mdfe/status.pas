@@ -35,8 +35,8 @@ var
   Resp: string;
   Params, JSONResp: TJSONObject;
 begin
-  FToken := 'TokenDoEmitente'; // 1 - Produção, 2 - Homologação
-  FAmbiente := 2;
+  FToken := 'TokenDoEmitente';
+  FAmbiente := 2; // 1 - Produção, 2 - Homologação
   FTimeout := 60;
   FPort := 443;
   FDebug := False;
