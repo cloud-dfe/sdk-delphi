@@ -3,9 +3,9 @@ unit SDKUnit;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  System.JSON, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  UtilUnit, SofthouseUnit;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, 
+  System.JSON, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, 
+  UtilUnit, NfcomUnit;
 
 type
   TForm1 = class(TForm)
@@ -24,7 +24,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraSofthouse: TIntegraSofthouse;
+  IntegraNfcom: TIntegraNfcom;
 
 implementation
 
@@ -49,14 +49,16 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraSofthouse := TIntegraSofthouse.Create(Params);
+    IntegraNfcom := TIntegraNfcom.Create(Params);
 
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('status', 'ativos');
+        Payload.AddPair('ano', TJSONNumber.Create(2019));
+        Payload.AddPair('mes', TJSONNumber.Create(12));
+        Payload.AddPair('emails', TJSONArray.Create(TJSONString.Create('contato@cloud-dfe.com.br')));
 
-        Resp := IntegraSofthouse.ListaEmitentes(Payload);
+        Resp := IntegraNfcom.Backup(Payload);
         Resp := UTF8ToString(Resp);
 
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
@@ -68,13 +70,12 @@ begin
         finally
           JSONResp.Free;
         end;
-
       finally
         Payload.Free;
       end;
 
     finally
-      IntegraSofthouse.Free;
+      IntegraNfcom.Free;
     end;
 
   finally

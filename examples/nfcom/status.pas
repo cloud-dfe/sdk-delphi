@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   System.JSON, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  UtilUnit, SofthouseUnit;
+  UtilUnit, NfcomUnit;
 
 type
   TForm1 = class(TForm)
@@ -24,7 +24,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraSofthouse: TIntegraSofthouse;
+  IntegraNfcom: TIntegraNfcom;
 
 implementation
 
@@ -33,7 +33,7 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params, Payload, JSONResp: TJSONObject;
+  Params, JSONResp: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2; // 1 - Produção, 2 - Homologação
@@ -49,32 +49,24 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraSofthouse := TIntegraSofthouse.Create(Params);
+    IntegraNfcom := TIntegraNfcom.Create(Params);
 
     try
-      Payload := TJSONObject.Create;
+      Resp := IntegraNfcom.Status;
+      Resp := UTF8ToString(Resp);
+
+      JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
       try
-        Payload.AddPair('status', 'ativos');
-
-        Resp := IntegraSofthouse.ListaEmitentes(Payload);
-        Resp := UTF8ToString(Resp);
-
-        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
-        try
-          if Assigned(JSONResp) then
-            ShowMessage(JSONResp.Format)
-          else
-            ShowMessage('Erro ao converter a resposta para JSON');
-        finally
-          JSONResp.Free;
-        end;
-
+        if Assigned(JSONResp) then
+          ShowMessage(JSONResp.Format)
+        else
+          ShowMessage('Erro ao converter a resposta para JSON');
       finally
-        Payload.Free;
+        JSONResp.Free;
       end;
 
     finally
-      IntegraSofthouse.Free;
+      IntegraNfcom.Free;
     end;
 
   finally

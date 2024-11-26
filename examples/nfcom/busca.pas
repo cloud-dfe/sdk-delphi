@@ -3,9 +3,9 @@ unit SDKUnit;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  System.JSON, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  UtilUnit, SofthouseUnit;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, 
+  System.JSON, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, 
+  UtilUnit, NfcomUnit;
 
 type
   TForm1 = class(TForm)
@@ -24,7 +24,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraSofthouse: TIntegraSofthouse;
+  IntegraNfcom: TIntegraNfcom;
 
 implementation
 
@@ -49,14 +49,21 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraSofthouse := TIntegraSofthouse.Create(Params);
+    IntegraNfcom := TIntegraNfcom.Create(Params);
 
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('status', 'ativos');
+        Payload.AddPair('numero_inicial', TJSONNumber.Create(1210));
+        Payload.AddPair('numero_final', TJSONNumber.Create(1210));
+        Payload.AddPair('serie', TJSONNumber.Create(1));
+        Payload.AddPair('data_inicial', '2019-12-01');
+        Payload.AddPair('data_final', '2019-12-31');
+        Payload.AddPair('cancel_inicial', '2019-12-01');
+        Payload.AddPair('cancel_final', '2019-12-31');
+        Payload.AddPair('status', '1');
 
-        Resp := IntegraSofthouse.ListaEmitentes(Payload);
+        Resp := IntegraNfcom.Busca(Payload);
         Resp := UTF8ToString(Resp);
 
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
@@ -68,13 +75,12 @@ begin
         finally
           JSONResp.Free;
         end;
-
       finally
         Payload.Free;
       end;
 
     finally
-      IntegraSofthouse.Free;
+      IntegraNfcom.Free;
     end;
 
   finally

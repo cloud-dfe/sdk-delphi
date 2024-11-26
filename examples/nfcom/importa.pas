@@ -3,9 +3,9 @@ unit SDKUnit;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  System.JSON, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  UtilUnit, SofthouseUnit;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, 
+  System.JSON, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, 
+  UtilUnit, NfcomUnit;
 
 type
   TForm1 = class(TForm)
@@ -24,7 +24,7 @@ var
   FTimeout: Integer;
   FPort: Integer;
   FDebug: Boolean;
-  IntegraSofthouse: TIntegraSofthouse;
+  IntegraNfcom: TIntegraNfcom;
 
 implementation
 
@@ -32,7 +32,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  Resp: string;
+  Resp, XMLBase64: string;
   Params, Payload, JSONResp: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
@@ -49,14 +49,25 @@ begin
     Params.AddPair('port', TJSONNumber.Create(FPort));
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    IntegraSofthouse := TIntegraSofthouse.Create(Params);
+    IntegraNfcom := TIntegraNfcom.Create(Params);
 
     try
+      try
+        XMLBase64 := TIntegraUtil.ReadFile('caminho_do_arquivo.xml');
+        XMLBase64 := TIntegraUtil.Encode(XMLBase64);
+      except
+        on E: Exception do
+        begin
+          ShowMessage('Erro ao ler o arquivo: ' + E.Message);
+          Exit;
+        end;
+      end;
+
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('status', 'ativos');
+        Payload.AddPair('xml', XMLBase64);
 
-        Resp := IntegraSofthouse.ListaEmitentes(Payload);
+        Resp := IntegraNfcom.Importa(Payload);
         Resp := UTF8ToString(Resp);
 
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
@@ -68,13 +79,12 @@ begin
         finally
           JSONResp.Free;
         end;
-
       finally
         Payload.Free;
       end;
 
     finally
-      IntegraSofthouse.Free;
+      IntegraNfcom.Free;
     end;
 
   finally
