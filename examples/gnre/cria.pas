@@ -156,7 +156,7 @@ begin
     begin
       ShowMessage('Erro nos campos: ' + TIntegraUtil.GetValueFromJson(Resp, 'erros'));
     end
-    else if (Codigo = 5008) or (Codigo >= 7000) then
+    else if (Codigo = 5008) then
     begin
       Chave := TIntegraUtil.GetValueFromJson(Resp, 'chave');
       ShowMessage('Erro ou timeout. Sincronizando GNRE com chave: ' + Chave);

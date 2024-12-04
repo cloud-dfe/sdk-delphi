@@ -240,7 +240,7 @@ begin
       begin
         ShowMessage('Erro nos campos: ' + JSONResp.GetValue<TJSONArray>('erros').ToString);
       end
-      else if (Codigo = 5008) or (Codigo >= 7000) then
+      else if (Codigo = 5008) then
       begin
         Chave := JSONResp.GetValue<string>('chave');
         ShowMessage('Erro de timeout ou conexão. Sincronizando documento.');
