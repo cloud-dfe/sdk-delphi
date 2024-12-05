@@ -53,31 +53,99 @@ begin
 
     try
       Payload := TJSONObject.Create;
+    try
+      Payload.AddPair('numero', '6');
+      Payload.AddPair('uf_favoverida', 'RO');
+      Payload.AddPair('ie_emitente_uf_favorecida', TJSONNull.Create);
+      Payload.AddPair('tipo', TJSONNumber.Create(0));
+      Payload.AddPair('valor', TJSONNumber.Create(12.55));
+      Payload.AddPair('data_pagamento', '2022-05-22');
+      Payload.AddPair('identificador_guia', '12345');
+
+    // Adiciona "receitas"
+    var ReceitasArray := TJSONArray.Create;
+    var Receita := TJSONObject.Create;
+    try
+      Receita.AddPair('codigo', '100102');
+      Receita.AddPair('detalhamento', TJSONNull.Create);
+      Receita.AddPair('data_vencimento', '2022-05-22');
+      Receita.AddPair('convenio', 'Convênio ICMS 142/18');
+      Receita.AddPair('numero_controle', '1');
+      Receita.AddPair('numero_controle_fecp', TJSONNull.Create);
+
+      // Adiciona "documento_origem"
+      var DocumentoOrigem := TJSONObject.Create;
       try
-        // Monta o payload
-        Payload.AddPair('numero', '6');
-        Payload.AddPair('uf_favoverida', 'RO');
-        Payload.AddPair('tipo', TJSONNumber.Create(0));
-        Payload.AddPair('valor', TJSONNumber.Create(12.55));
-        Payload.AddPair('data_pagamento', '2022-05-22');
-        Payload.AddPair('identificador_guia', '12345');
-
-        Resp := IntegraGnre.Cria(Payload);
-        Resp := UTF8ToString(Resp);
-
-        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
-        try
-          if Assigned(JSONResp) then
-            ProcessaResposta(JSONResp)
-          else
-            ShowMessage('Erro ao converter a resposta para JSON');
-        finally
-          JSONResp.Free;
-        end;
-
+        DocumentoOrigem.AddPair('numero', '000000001');
+        DocumentoOrigem.AddPair('tipo', '10');
+        Receita.AddPair('documento_origem', DocumentoOrigem);
       finally
-        Payload.Free;
+        DocumentoOrigem.Free;
       end;
+
+      Receita.AddPair('produto', TJSONNull.Create);
+
+      // Adiciona "referencia"
+      var Referencia := TJSONObject.Create;
+      try
+        Referencia.AddPair('periodo', '0');
+        Referencia.AddPair('mes', '05');
+        Referencia.AddPair('ano', '2022');
+        Referencia.AddPair('parcela', TJSONNull.Create);
+        Receita.AddPair('referencia', Referencia);
+      finally
+        Referencia.Free;
+      end;
+
+      // Adiciona "valores"
+      var ValoresArray := TJSONArray.Create;
+      var Valor := TJSONObject.Create;
+      try
+        Valor.AddPair('valor', TJSONNumber.Create(12.55));
+        Valor.AddPair('tipo', '11');
+        ValoresArray.AddElement(Valor);
+      except
+        Valor.Free;
+        raise;
+      end;
+      Receita.AddPair('valores', ValoresArray);
+
+      // Adiciona "contribuinte_destinatario"
+      var Contribuinte := TJSONObject.Create;
+      try
+        Contribuinte.AddPair('cnpj', TJSONNull.Create);
+        Contribuinte.AddPair('cpf', TJSONNull.Create);
+        Contribuinte.AddPair('ie', TJSONNull.Create);
+        Contribuinte.AddPair('razao', TJSONNull.Create);
+        Contribuinte.AddPair('ibge', TJSONNull.Create);
+        Receita.AddPair('contribuinte_destinatario', Contribuinte);
+      finally
+        Contribuinte.Free;
+      end;
+
+      // Adiciona "extras"
+      var ExtrasArray := TJSONArray.Create;
+      var Extra := TJSONObject.Create;
+      try
+        Extra.AddPair('codigo', '52');
+        Extra.AddPair('conteudo', '32220526434850000191550100000000011015892724');
+        ExtrasArray.AddElement(Extra);
+      except
+        Extra.Free;
+        raise;
+      end;
+      Receita.AddPair('extras', ExtrasArray);
+
+      ReceitasArray.AddElement(Receita);
+    except
+      Receita.Free;
+      raise;
+    end;
+
+      Payload.AddPair('receitas', ReceitasArray);
+    finally
+      Payload.Free;
+    end;
 
     finally
       IntegraGnre.Free;
