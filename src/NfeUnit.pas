@@ -28,6 +28,7 @@ type
     function Importa(const Payload: TJSONObject): string;
     function Comprovante(const Payload: TJSONObject): string;
     function Cadastro(const Payload: TJSONObject): string;
+    function Simples(const Payload: TJSONObject): string;
   end;
 
 implementation
@@ -134,6 +135,14 @@ end;
 function TIntegraNfe.Cadastro(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/cadastro', Payload);
+end;
+
+function TIntegraNfe.Simples(const Payload: TJSONObject): string;
+var
+  Key: string;
+begin
+  Key := CheckKey(Payload);
+  Result := FClient.Send('GET', Format('/nfe/pdf/simples/%s', [Key]), nil);
 end;
 
 end.
