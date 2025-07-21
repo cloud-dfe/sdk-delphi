@@ -24,7 +24,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/gnre/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/gnre/' + Key);
 end;
 
 function TIntegraGnre.Cria(const Payload: TJSONObject): string;

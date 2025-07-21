@@ -49,7 +49,7 @@ begin
     Rota := '/soft/emitente/deletados'
   else
     Rota := '/soft/emitente';
-  Result := FClient.Send('GET', Rota, nil);
+  Result := FClient.Send('GET', Rota);
 end;
 
 function TIntegraSofthouse.DeletaEmitente(const Payload: TJSONObject): string;
@@ -58,7 +58,7 @@ var
 begin
   if (Payload = nil) or not Payload.TryGetValue('doc', Doc) then
     raise ESofthouseException.Create('Deve ser passado um CNPJ ou um CPF para efetuar a deleção do emitente.');
-  Result := FClient.Send('DELETE', '/soft/emitente/' + Doc, nil);
+  Result := FClient.Send('DELETE', '/soft/emitente/' + Doc);
 end;
 
 end.

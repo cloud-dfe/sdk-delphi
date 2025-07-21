@@ -42,7 +42,7 @@ end;
 
 function TIntegraMdfe.Status: string;
 begin
-  Result := FClient.Send('GET', '/mdfe/status', nil);
+  Result := FClient.Send('GET', '/mdfe/status');
 end;
 
 function TIntegraMdfe.Consulta(const Payload: TJSONObject): string;
@@ -50,7 +50,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/mdfe/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/mdfe/' + Key);
 end;
 
 function TIntegraMdfe.Busca(const Payload: TJSONObject): string;
@@ -75,7 +75,7 @@ end;
 
 function TIntegraMdfe.Offline: string;
 begin
-  Result := FClient.Send('GET', '/mdfe/offline', nil);
+  Result := FClient.Send('GET', '/mdfe/offline');
 end;
 
 function TIntegraMdfe.Pdf(const Payload: TJSONObject): string;
@@ -83,7 +83,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/mdfe/pdf/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/mdfe/pdf/' + Key);
 end;
 
 function TIntegraMdfe.Backup(const Payload: TJSONObject): string;
@@ -98,7 +98,7 @@ end;
 
 function TIntegraMdfe.Abertos: string;
 begin
-  Result := FClient.Send('GET', '/mdfe/abertos', nil);
+  Result := FClient.Send('GET', '/mdfe/abertos');
 end;
 
 function TIntegraMdfe.Importa(const Payload: TJSONObject): string;

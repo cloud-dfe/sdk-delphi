@@ -38,7 +38,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/cte/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/cte/' + Key);
 end;
 
 function TIntegraCte.Pdf(const Payload: TJSONObject): string;
@@ -46,7 +46,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/cte/pdf/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/cte/pdf/' + Key);
 end;
 
 function TIntegraCte.Cria(const Payload: TJSONObject): string;

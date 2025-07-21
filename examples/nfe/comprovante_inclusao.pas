@@ -33,8 +33,7 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Payload: TJSONObject;
-  JSONResp: TJSONObject;
+  Payload, Params, JSONResp: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2; // 1 - Produção, 2 - Homologação
@@ -42,42 +41,54 @@ begin
   FPort := 443;
   FDebug := False;
 
-  IntegraNfe := TIntegraNfe.Create;
-
+  Params := TJSONObject.Create;
   try
-    Payload := TJSONObject.Create;
-    try
-      Payload.AddPair('chave', '123456789012345678901234567890123456789012345678901234'); // Chave de acesso obrigatória
-      Payload.AddPair('registra', TJSONObject.Create
-        .AddPair('data', '2021-10-12T12:22:33-03:00') // Data e hora obrigatória do recebimento
-        .AddPair('imagem', 'lUHJvYyB2ZXJzYW....') // Base64 opcional para a imagem
-        .AddPair('recebedor_documento', '123456789 SSPRJ') // Documento de identificação do recebedor
-        .AddPair('recebedor_nome', 'NOME TESTE') // Nome do recebedor
-        .AddPair('coordenadas', TJSONObject.Create
-          .AddPair('latitude', -23.628360)
-          .AddPair('longitude', -46.622109)
-        )
-      );
+    Params.AddPair('token', FToken);
+    Params.AddPair('ambiente', TJSONNumber.Create(FAmbiente));
+    Params.AddPair('timeout', TJSONNumber.Create(FTimeout));
+    Params.AddPair('port', TJSONNumber.Create(FPort));
+    Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-      Resp := IntegraNfe.Comprovante(Payload);
-      Resp := UTF8ToString(Resp);
-      
-      JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+    IntegraNfe := TIntegraNfe.Create(Params);
+
+    try
+      Payload := TJSONObject.Create;
       try
-        if Assigned(JSONResp) then
-          ShowMessage(JSONResp.Format)
-        else
-          ShowMessage('Erro ao converter a resposta para JSON');
+        Payload.AddPair('chave', '123456789012345678901234567890123456789012345678901234'); // Chave de acesso obrigatória
+        Payload.AddPair('registra', TJSONObject.Create
+          .AddPair('data', '2021-10-12T12:22:33-03:00') // Data e hora obrigatória do recebimento
+          .AddPair('imagem', 'lUHJvYyB2ZXJzYW....') // Base64 opcional para a imagem
+          .AddPair('recebedor_documento', '123456789 SSPRJ') // Documento de identificação do recebedor
+          .AddPair('recebedor_nome', 'NOME TESTE') // Nome do recebedor
+          .AddPair('coordenadas', TJSONObject.Create
+            .AddPair('latitude', -23.628360)
+            .AddPair('longitude', -46.622109)
+          )
+        );
+
+        Resp := IntegraNfe.Comprovante(Payload);
+        Resp := UTF8ToString(Resp);
+        
+        JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+        try
+          if Assigned(JSONResp) then
+            ShowMessage(JSONResp.Format)
+          else
+            ShowMessage('Erro ao converter a resposta para JSON');
+        finally
+          JSONResp.Free;
+        end;
+
       finally
-        JSONResp.Free;
+        Payload.Free;
       end;
 
     finally
-      Payload.Free;
+      IntegraNfe.Free;
     end;
 
   finally
-    IntegraNfe.Free;
+    Params.Free;
   end;
 end;
 

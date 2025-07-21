@@ -21,7 +21,7 @@ implementation
 
 function TIntegraEmitente.Token: string;
 begin
-  Result := FClient.Send('GET', '/emitente/token', nil);
+  Result := FClient.Send('GET', '/emitente/token');
 end;
 
 function TIntegraEmitente.Atualiza(const Payload: TJSONObject): string;
@@ -31,7 +31,7 @@ end;
 
 function TIntegraEmitente.Mostra: string;
 begin
-  Result := FClient.Send('GET', '/emitente', nil);
+  Result := FClient.Send('GET', '/emitente');
 end;
 
 end.

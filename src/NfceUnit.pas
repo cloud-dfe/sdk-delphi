@@ -40,7 +40,7 @@ end;
 
 function TIntegraNfce.Status: string;
 begin
-  Result := FClient.Send('GET', '/nfce/status', nil);
+  Result := FClient.Send('GET', '/nfce/status');
 end;
 
 function TIntegraNfce.Consulta(const Payload: TJSONObject): string;
@@ -48,7 +48,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfce/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/nfce/' + Key);
 end;
 
 function TIntegraNfce.Busca(const Payload: TJSONObject): string;
@@ -63,7 +63,7 @@ end;
 
 function TIntegraNfce.Offline: string;
 begin
-  Result := FClient.Send('GET', '/nfce/offline', nil);
+  Result := FClient.Send('GET', '/nfce/offline');
 end;
 
 function TIntegraNfce.Inutiliza(const Payload: TJSONObject): string;
@@ -76,7 +76,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfce/pdf/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/nfce/pdf/' + Key);
 end;
 
 function TIntegraNfce.Substitui(const Payload: TJSONObject): string;

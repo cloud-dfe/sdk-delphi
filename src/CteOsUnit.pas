@@ -30,7 +30,7 @@ implementation
 
 function TIntegraCteOS.Status: TJSONObject;
 begin
-  Result := FClient.Send('GET', '/cteos/status', nil);
+  Result := FClient.Send('GET', '/cteos/status');
 end;
 
 function TIntegraCteOS.Consulta(const Payload: TJSONObject): string;
@@ -38,7 +38,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/cteos/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/cteos/' + Key);
 end;
 
 function TIntegraCteOS.Pdf(const Payload: TJSONObject): string;
@@ -46,7 +46,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/cteos/pdf/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/cteos/pdf/' + Key);
 end;
 
 function TIntegraCteOS.Cria(const Payload: TJSONObject): string;

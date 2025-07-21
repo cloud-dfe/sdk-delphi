@@ -1,40 +1,10 @@
-unit SDKUnit;
-
-interface
-
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, System.JSON, UtilUnit, DfeUnit;
-
-type
-  TForm1 = class(TForm)
-    Button1: TButton;
-    procedure Button1Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
-  end;
-
-var
-  Form1: TForm1;
-  FToken: string;
-  FAmbiente: Integer;
-  FTimeout: Integer;
-  FPort: Integer;
-  FDebug: Boolean;
-  IntegraDfe: TIntegraDfe;
-
-implementation
-
-{$R *.dfm}
-
 procedure TForm1.ButtonDownloadNfseClick(Sender: TObject);
 var
   Resp: string;
   JsonResp, DocObj: TJSONObject;
-  XMLDecoded: string;
-  Payload: TJSONObject;
+  XMLDecoded, FilePathXML, FilePathPDF: string;
+  PDFDecoded: TBytes;
+  Params, Payload: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2; // 1 - Produção, 2 - Homologação
@@ -42,37 +12,63 @@ begin
   FPort := 443;
   FDebug := False;
 
-  Payload := TJSONObject.Create;
+  Params := TJSONObject.Create;
   try
-    Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
+    Params.AddPair('token', FToken);
+    Params.AddPair('ambiente', TJSONNumber.Create(FAmbiente));
+    Params.AddPair('timeout', TJSONNumber.Create(FTimeout));
+    Params.AddPair('port', TJSONNumber.Create(FPort));
+    Params.AddPair('debug', TJSONBool.Create(FDebug));
 
-    Resp := IntegraDfe.DownloadNfse(Payload);
-    JsonResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
+    IntegraDfe := TIntegraDfe.Create(Params);
 
-    if Assigned(JsonResp) then
     try
-      if TIntegraUtil.GetValueFromJson(JsonResp, 'sucesso') = 'true' then
-      begin
-        DocObj := JsonResp.GetValue<TJSONObject>('doc');
-        if Assigned(DocObj) then
-        begin
-          XMLDecoded := TIntegraUtil.Decode(TIntegraUtil.GetValueFromJson(DocObj, 'xml'));
+      Payload := TJSONObject.Create;
+      try
+        Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
 
-          ShowMessage('XML Decodificado: ' + XMLDecoded);
-        end
-        else
-          ShowMessage('Erro: Objeto "doc" não encontrado na resposta.');
-      end
-      else
-        ShowMessage('Erro: ' + TIntegraUtil.GetValueFromJson(JsonResp, 'mensagem'));
+        Resp := IntegraDfe.DownloadNfse(Payload);
+        JsonResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
 
+        if Assigned(JsonResp) then
+        try
+          if TIntegraUtil.GetValueFromJson(JsonResp, 'sucesso') = 'true' then
+          begin
+            DocObj := JsonResp.GetValue<TJSONObject>('doc');
+            if Assigned(DocObj) then
+            begin
+              XMLDecoded := TIntegraUtil.Decode(TIntegraUtil.GetValueFromJson(DocObj, 'xml'));
+              PDFDecoded := TIntegraUtil.DecodeToBytes(TIntegraUtil.GetValueFromJson(DocObj, 'pdf'));
+
+              FilePathXML := 'caminho_do_arquivo_nfse.xml';
+              FilePathPDF := 'caminho_do_arquivo_nfse.pdf';
+
+              try
+                TIntegraUtil.SaveFile(XMLDecoded, FilePathXML);
+                TIntegraUtil.SavePDF(PDFDecoded, FilePathPDF);
+                ShowMessage('Arquivos XML e PDF salvos com sucesso!');
+              except
+                on E: Exception do
+                  ShowMessage('Erro ao salvar arquivos: ' + E.Message);
+              end;
+
+              DocObj.Free;
+            end
+            else
+              ShowMessage('Erro: Objeto "doc" não encontrado na resposta.');
+          end
+          else
+            ShowMessage('Erro: ' + TIntegraUtil.GetValueFromJson(JsonResp, 'mensagem'));
+        finally
+          JsonResp.Free;
+        end;
+      finally
+        Payload.Free;
+      end;
     finally
-      JsonResp.Free;
+      IntegraDfe.Free;
     end;
-
   finally
-    Payload.Free;
+    Params.Free;
   end;
 end;
-
-end.

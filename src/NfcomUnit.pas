@@ -27,7 +27,7 @@ implementation
 
 function TIntegraNfcom.Status: string;
 begin
-  Result := FClient.Send('GET', '/nfcom/status', nil);
+  Result := FClient.Send('GET', '/nfcom/status');
 end;
 
 function TIntegraNfcom.Cria(const Payload: TJSONObject): string;
@@ -40,7 +40,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfcom/%s', [Key]), Payload);
+  Result := FClient.Send('GET', '/nfcom/' + Key);
 end;
 
 function TIntegraNfcom.Cancela(const Payload: TJSONObject): string;
@@ -58,7 +58,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfcom/pdf/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/nfcom/pdf/' + Key);
 end;
 
 function TIntegraNfcom.Preview(const Payload: TJSONObject): string;

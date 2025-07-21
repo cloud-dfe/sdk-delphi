@@ -47,7 +47,7 @@ end;
 
 function TIntegraNfe.Status: string;
 begin
-  Result := FClient.Send('GET', '/nfe/status', nil);
+  Result := FClient.Send('GET', '/nfe/status');
 end;
 
 function TIntegraNfe.Consulta(const Payload: TJSONObject): string;
@@ -55,7 +55,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfe/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/nfe/' + Key);
 end;
 
 function TIntegraNfe.Busca(const Payload: TJSONObject): string;
@@ -83,7 +83,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfe/pdf/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/nfe/pdf/' + Key);
 end;
 
 function TIntegraNfe.Etiqueta(const Payload: TJSONObject): string;
@@ -91,7 +91,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfe/pdf/etiqueta/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/nfe/pdf/etiqueta/' + Key);
 end;
 
 function TIntegraNfe.Manifesta(const Payload: TJSONObject): string;
@@ -109,7 +109,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfe/download/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/nfe/download/' + Key);
 end;
 
 function TIntegraNfe.Recebidas(const Payload: TJSONObject): string;
@@ -142,7 +142,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/nfe/pdf/simples/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/nfe/pdf/simples/' + Key);
 end;
 
 end.

@@ -39,7 +39,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/dfe/nfe/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/dfe/nfe/' + Key);
 end;
 
 function TIntegraDfe.BuscaNfse(const Payload: TJSONObject): string;
@@ -52,7 +52,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/dfe/nfse/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/dfe/nfse/' + Key);
 end;
 
 function TIntegraDfe.DownloadCte(const Payload: TJSONObject): string;
@@ -60,7 +60,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/dfe/cte/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/dfe/cte/' + Key);
 end;
 
 function TIntegraDfe.Eventos(const Payload: TJSONObject): string;
@@ -68,7 +68,7 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', Format('/dfe/eventos/%s', [Key]), nil);
+  Result := FClient.Send('GET', '/dfe/eventos/' + Key);
 end;
 
 function TIntegraDfe.Backup(const Payload: TJSONObject): string;

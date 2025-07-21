@@ -24,15 +24,8 @@ begin
 end;
 
 function TIntegraCertificado.Mostra: TJSONObject;
-var
-  EmptyPayload: TJSONObject;
 begin
-  EmptyPayload := TJSONObject.Create;
-  try
-    Result := FClient.Send('GET', '/certificado', EmptyPayload);
-  finally
-    EmptyPayload.Free;
-  end;
-end;
+  Result := FClient.Send('GET', '/certificado');
+end.
 
 end.
