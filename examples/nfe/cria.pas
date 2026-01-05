@@ -167,7 +167,7 @@ procedure TForm1.ProcessaNfeResposta(const RespJSON: string);
 var
   JSONResp, Payload, ConsultaResp: TJSONObject;
   Chave: string;
-  Codigo, Tentativa: Integer;
+  Codigo: Integer;
   Sucesso: Boolean;
 begin
   JSONResp := TJSONObject.ParseJSONValue(RespJSON) as TJSONObject;
@@ -180,51 +180,8 @@ begin
       if Sucesso then
       begin
         Chave := JSONResp.GetValue<string>('chave');
-        Sleep(5000);
-        Tentativa := 1;
-
-        while Tentativa <= 5 do
-        begin
-          Payload := TJSONObject.Create;
-          try
-            Payload.AddPair('chave', Chave);
-            ConsultaResp := TJSONObject.ParseJSONValue(IntegraNfe.Consulta(Payload)) as TJSONObject;
-            try
-              if Assigned(ConsultaResp) then
-              begin
-                Codigo := ConsultaResp.GetValue<Integer>('codigo');
-                Sucesso := ConsultaResp.GetValue<Boolean>('sucesso');
-                if Codigo <> 5023 then
-                begin
-                  if Sucesso then
-                  begin
-                    ShowMessage('NFe autorizada: ' + ConsultaResp.Format);
-                  end
-                  else
-                  begin
-                    ShowMessage('NFe rejeitada: ' + ConsultaResp.Format);
-                  end;
-                  Break;
-                end;
-              end;
-            finally
-              ConsultaResp.Free;
-            end;
-          finally
-            Payload.Free;
-          end;
-          Sleep(5000);
-          Inc(Tentativa);
-        end;
-      end
-      else if (Codigo = 5001) or (Codigo = 5002) then
-      begin
-        ShowMessage('Erro nos campos: ' + JSONResp.GetValue<TJSONArray>('erros').ToString);
-      end
-      else if (Codigo = 5008) then
-      begin
-        Chave := JSONResp.GetValue<string>('chave');
-        ShowMessage('Erro de timeout ou conexão. Sincronizando documento.');
+        
+        Sleep(15000);
 
         Payload := TJSONObject.Create;
         try
@@ -233,16 +190,19 @@ begin
           try
             if Assigned(ConsultaResp) then
             begin
-              Sucesso := ConsultaResp.GetValue<Boolean>('sucesso');
               Codigo := ConsultaResp.GetValue<Integer>('codigo');
+              Sucesso := ConsultaResp.GetValue<Boolean>('sucesso');
 
-              if Sucesso and (Codigo = 5023) then
+              if Codigo <> 5023 then
               begin
-                ShowMessage('NFe autorizada: ' + ConsultaResp.Format);
+                if Sucesso then
+                  ShowMessage('NFe autorizada: ' + ConsultaResp.Format)
+                else
+                  ShowMessage('NFe rejeitada: ' + ConsultaResp.Format);
               end
               else
               begin
-                ShowMessage('NFe rejeitada: ' + ConsultaResp.Format);
+                ShowMessage('NFe em processamento: ' + ConsultaResp.Format);
               end;
             end;
           finally
@@ -252,8 +212,14 @@ begin
           Payload.Free;
         end;
       end
+      else if (Codigo = 5001) or (Codigo = 5002) then
+      begin
+        // Erros de validação dos dados enviados
+        ShowMessage('Erro nos campos: ' + JSONResp.GetValue<TJSONArray>('erros').ToString);
+      end
       else
       begin
+        // Outros erros diversos
         ShowMessage('NFe rejeitada: ' + JSONResp.Format);
       end;
     end
