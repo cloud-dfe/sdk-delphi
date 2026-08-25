@@ -1,12 +1,14 @@
-﻿unit UtilUnit;
+unit UtilUnit;
 
 interface
 
 uses
-  System.SysUtils, System.Classes, System.NetEncoding, System.JSON, System.IOUtils;
+  System.SysUtils, System.Classes, System.NetEncoding, System.JSON, System.IOUtils, System.ZLib;
 
 type
   TIntegraUtil = class
+  private
+    class function DecompressGZip(const InBytes: TBytes): string;
   public
     class function Encode(const Data: string): string;
     class function Decode(const Data: string): string;
@@ -21,29 +23,65 @@ implementation
 
 { TIntegraUtil }
 
-// ENCODE PARA BASE64
-
 class function TIntegraUtil.Encode(const Data: string): string;
 begin
   Result := TNetEncoding.Base64.Encode(Data);
 end;
 
-// DECODE DE BASE64
+class function TIntegraUtil.DecompressGZip(const InBytes: TBytes): string;
+var
+  InStream, OutStream: TMemoryStream;
+  DecompressStream: TZDecompressionStream;
+  OutBytes: TBytes;
+begin
+  if (Length(InBytes) >= 2) and (InBytes[0] = $1F) and (InBytes[1] = $8B) then
+  begin
+    InStream := TMemoryStream.Create;
+    OutStream := TMemoryStream.Create;
+    try
+      InStream.WriteBuffer(InBytes[0], Length(InBytes));
+      InStream.Position := 0;
+      try
+        DecompressStream := TZDecompressionStream.Create(InStream, 15 + 16);
+        try
+          OutStream.CopyFrom(DecompressStream, 0);
+        finally
+          DecompressStream.Free;
+        end;
+        SetLength(OutBytes, OutStream.Size);
+        if OutStream.Size > 0 then
+        begin
+          OutStream.Position := 0;
+          OutStream.ReadBuffer(OutBytes[0], OutStream.Size);
+        end;
+        Result := TEncoding.UTF8.GetString(OutBytes);
+      except
+        // Em caso de falha na descompressao gzip, retorna os bytes decodificados em UTF8
+        Result := TEncoding.UTF8.GetString(InBytes);
+      end;
+    finally
+      InStream.Free;
+      OutStream.Free;
+    end;
+  end
+  else
+  begin
+    Result := TEncoding.UTF8.GetString(InBytes);
+  end;
+end;
 
 class function TIntegraUtil.Decode(const Data: string): string;
 var
-  DecodedData: TBytes;
+  DecodedBytes: TBytes;
 begin
   try
-    DecodedData := TNetEncoding.Base64.DecodeStringToBytes(Data);
-    Result := TEncoding.UTF8.GetString(DecodedData);
+    DecodedBytes := TNetEncoding.Base64.DecodeStringToBytes(Data);
+    Result := DecompressGZip(DecodedBytes);
   except
     on E: Exception do
       raise Exception.Create('Erro ao decodificar dados: ' + E.Message);
   end;
 end;
-
-// LER ARQUIVO EM UTF8
 
 class function TIntegraUtil.ReadFile(const FileName: string): string;
 begin
@@ -55,8 +93,6 @@ begin
   end;
 end;
 
-// OBTER VALOR DE UMA CHAVE EM UM JSON
-
 class function TIntegraUtil.GetValueFromJson(const JSONObj: TJSONObject; const Key: string): string;
 var
   Value: TJSONValue;
@@ -64,35 +100,22 @@ begin
   Result := '';
   if Assigned(JSONObj) then
   begin
-    Value := JSONObj.GetValue(Key);
+    Value := JSONObj.GetValue<TJSONValue>(Key, nil);
     if Assigned(Value) then
-      Result := Value.ToString.Replace('"', '');
+      Result := Value.Value;
   end;
 end;
-
-// DECODIFICAR BASE64 PARA BYTES
 
 class function TIntegraUtil.DecodeToBytes(const ABase64: string): TBytes;
-var
-  Decoder: TBase64Encoding;
 begin
-  Decoder := TBase64Encoding.Create;
-  try
-    Result := Decoder.DecodeStringToBytes(ABase64);
-  finally
-    Decoder.Free;
-  end;
+  Result := TNetEncoding.Base64.DecodeStringToBytes(ABase64);
 end;
-
-// SALVAR ARQUIVO
 
 class procedure TIntegraUtil.SaveFile(const Data: string; const FilePath: string);
 var
   StreamWriter: TStreamWriter;
-
 begin
-
-  if FilePath = '' then
+  if FilePath.Trim.IsEmpty then
     raise Exception.Create('Caminho do arquivo não informado');
 
   if not TDirectory.Exists(ExtractFilePath(FilePath)) then
@@ -104,16 +127,13 @@ begin
   finally
     StreamWriter.Free;
   end;
-
 end;
-
-// SALVAR PDF
 
 class procedure TIntegraUtil.SavePDF(const Data: TBytes; const FilePath: string);
 var
   FileStream: TFileStream;
 begin
-  if FilePath = '' then
+  if FilePath.Trim.IsEmpty then
     raise Exception.Create('Caminho do arquivo não informado');
 
   if not TDirectory.Exists(ExtractFilePath(FilePath)) then
@@ -121,7 +141,8 @@ begin
 
   FileStream := TFileStream.Create(FilePath, fmCreate);
   try
-    FileStream.Write(Data, Length(Data));
+    if Length(Data) > 0 then
+      FileStream.WriteBuffer(Data[0], Length(Data));
   finally
     FileStream.Free;
   end;

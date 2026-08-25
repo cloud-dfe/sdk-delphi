@@ -1,4 +1,4 @@
-﻿unit ServicesUnit;
+unit ServicesUnit;
 
 interface
 
@@ -17,6 +17,8 @@ type
     Code: string;
     Message: string;
   end;
+
+  EServiceException = class(Exception);
 
   TServices = class
   private
@@ -76,24 +78,46 @@ var
   RequestStream: TStringStream;
   URL: string;
   HeaderItem: string;
+  SepPos: Integer;
+  HeaderName, HeaderValue: string;
 begin
-  ResponseStream := TStringStream.Create;
-  RequestStream := TStringStream.Create;
+  ResponseStream := TStringStream.Create('', TEncoding.UTF8);
+  RequestStream := TStringStream.Create('', TEncoding.UTF8);
   try
     URL := FBaseUri + Route;
 
+    HTTP.Request.CustomHeaders.Clear;
     if Headers <> nil then
     begin
       for HeaderItem in Headers do
-        HTTP.Request.CustomHeaders.Add(HeaderItem);
+      begin
+        SepPos := Pos(':', HeaderItem);
+        if SepPos > 0 then
+        begin
+          HeaderName := Trim(Copy(HeaderItem, 1, SepPos - 1));
+          HeaderValue := Trim(Copy(HeaderItem, SepPos + 1, MaxInt));
+          if SameText(HeaderName, 'Content-Type') then
+            HTTP.Request.ContentType := HeaderValue
+          else if SameText(HeaderName, 'Accept') then
+            HTTP.Request.Accept := HeaderValue
+          else
+            HTTP.Request.CustomHeaders.Values[HeaderName] := HeaderValue;
+        end
+        else
+          HTTP.Request.CustomHeaders.Add(HeaderItem);
+      end;
     end;
 
-    if Payload <> nil then
+    if (Payload <> nil) and (Payload.Text <> '') then
       RequestStream.WriteString(Payload.Text);
+    RequestStream.Position := 0;
 
     try
       if Method = 'GET' then
-        Result := HTTP.Get(URL)
+      begin
+        HTTP.Get(URL, ResponseStream);
+        Result := ResponseStream.DataString;
+      end
       else if Method = 'POST' then
       begin
         HTTP.Post(URL, RequestStream, ResponseStream);
@@ -106,25 +130,27 @@ begin
       end
       else if Method = 'DELETE' then
       begin
-        HTTP.Delete(URL);
-        Result := 'Requisicao DELETE bem-sucedida';
+        HTTP.Delete(URL, ResponseStream);
+        Result := ResponseStream.DataString;
+        if Result = '' then
+          Result := HTTP.ResponseText;
       end
       else
-        raise Exception.Create('Metodo HTTP nao suportado.');
+        raise EServiceException.Create('Método HTTP não suportado: ' + Method);
 
     except
       on E: EIdHTTPProtocolException do
       begin
         FError.Code := IntToStr(E.ErrorCode);
         FError.Message := E.Message;
-        
         Result := E.ErrorMessage;
+        if Result = '' then
+          Result := Format('{"error": {"code": "%d", "message": "%s"}}', [E.ErrorCode, E.Message]);
       end;
       on E: Exception do
       begin
         FError.Code := '500';
         FError.Message := E.Message;
-
         Result := Format('{"error": {"code": "%s", "message": "%s"}}', [FError.Code, FError.Message]);
       end;
     end;

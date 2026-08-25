@@ -10,9 +10,10 @@ type
 
   TIntegraEmitente = class(TBase)
   public
-    function Token: TJSONObject;
+    function Token: string;
     function Atualiza(const Payload: TJSONObject): string;
-    function Mostra: TJSONObject;
+    function Mostra: string;
+    function Webhook(const Payload: TJSONObject): string;
   end;
 
 implementation
@@ -32,6 +33,11 @@ end;
 function TIntegraEmitente.Mostra: string;
 begin
   Result := FClient.Send('GET', '/emitente');
+end;
+
+function TIntegraEmitente.Webhook(const Payload: TJSONObject): string;
+begin
+  Result := FClient.Send('POST', '/webhook', Payload);
 end;
 
 end.

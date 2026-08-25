@@ -18,6 +18,7 @@ type
     function DownloadCte(const Payload: TJSONObject): string;
     function Eventos(const Payload: TJSONObject): string;
     function Backup(const Payload: TJSONObject): string;
+    function Manifesta(const Payload: TJSONObject): string;
   end;
 
 implementation
@@ -74,6 +75,11 @@ end;
 function TIntegraDfe.Backup(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/dfe/backup', Payload);
+end;
+
+function TIntegraDfe.Manifesta(const Payload: TJSONObject): string;
+begin
+  Result := FClient.Send('POST', '/dfe/nfe/manifesta', Payload);
 end;
 
 end.

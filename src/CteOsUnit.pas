@@ -1,4 +1,4 @@
-unit CteOSUnit;
+unit CteOsUnit;
 
 interface
 
@@ -6,11 +6,11 @@ uses
   System.SysUtils, System.Classes, BaseUnit, System.JSON, ClientUnit;
 
 type
-  ECteOSException = class(EBaseException);
+  ECteOsException = class(EBaseException);
 
-  TIntegraCteOS = class(TBase)
+  TIntegraCteOs = class(TBase)
   public
-    function Status: TJSONObject;
+    function Status: string;
     function Consulta(const Payload: TJSONObject): string;
     function Pdf(const Payload: TJSONObject): string;
     function Cria(const Payload: TJSONObject): string;
@@ -26,14 +26,14 @@ type
 
 implementation
 
-{ TIntegraCteOS }
+{ TIntegraCteOs }
 
-function TIntegraCteOS.Status: TJSONObject;
+function TIntegraCteOs.Status: string;
 begin
   Result := FClient.Send('GET', '/cteos/status');
 end;
 
-function TIntegraCteOS.Consulta(const Payload: TJSONObject): string;
+function TIntegraCteOs.Consulta(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -41,7 +41,7 @@ begin
   Result := FClient.Send('GET', '/cteos/' + Key);
 end;
 
-function TIntegraCteOS.Pdf(const Payload: TJSONObject): string;
+function TIntegraCteOs.Pdf(const Payload: TJSONObject): string;
 var
   Key: string;
 begin
@@ -49,47 +49,47 @@ begin
   Result := FClient.Send('GET', '/cteos/pdf/' + Key);
 end;
 
-function TIntegraCteOS.Cria(const Payload: TJSONObject): string;
+function TIntegraCteOs.Cria(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos', Payload);
 end;
 
-function TIntegraCteOS.Busca(const Payload: TJSONObject): string;
+function TIntegraCteOs.Busca(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos/busca', Payload);
 end;
 
-function TIntegraCteOS.Cancela(const Payload: TJSONObject): string;
+function TIntegraCteOs.Cancela(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos/cancela', Payload);
 end;
 
-function TIntegraCteOS.Correcao(const Payload: TJSONObject): string;
+function TIntegraCteOs.Correcao(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos/correcao', Payload);
 end;
 
-function TIntegraCteOS.Inutiliza(const Payload: TJSONObject): string;
+function TIntegraCteOs.Inutiliza(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos/inutiliza', Payload);
 end;
 
-function TIntegraCteOS.Backup(const Payload: TJSONObject): string;
+function TIntegraCteOs.Backup(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos/backup', Payload);
 end;
 
-function TIntegraCteOS.Importa(const Payload: TJSONObject): string;
+function TIntegraCteOs.Importa(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos/importa', Payload);
 end;
 
-function TIntegraCteOS.Preview(const Payload: TJSONObject): string;
+function TIntegraCteOs.Preview(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos/preview', Payload);
 end;
 
-function TIntegraCteOS.Desacordo(const Payload: TJSONObject): string;
+function TIntegraCteOs.Desacordo(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/cteos/desacordo', Payload);
 end;

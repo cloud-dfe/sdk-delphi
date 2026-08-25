@@ -10,7 +10,7 @@ type
 
   TIntegraCte = class(TBase)
   public
-    function Status: TJSONObject;
+    function Status: string;
     function Consulta(const Payload: TJSONObject): string;
     function Pdf(const Payload: TJSONObject): string;
     function Cria(const Payload: TJSONObject): string;
@@ -30,7 +30,7 @@ implementation
 
 function TIntegraCte.Status: string;
 begin
-  Result := FClient.Send('GET', '/cte/status', nil);
+  Result := FClient.Send('GET', '/cte/status');
 end;
 
 function TIntegraCte.Consulta(const Payload: TJSONObject): string;

@@ -11,7 +11,7 @@ type
   TIntegraCertificado = class(TBase)
   public
     function Atualiza(const Payload: TJSONObject): string;
-    function Mostra: TJSONObject;
+    function Mostra: string;
   end;
 
 implementation
@@ -23,9 +23,9 @@ begin
   Result := FClient.Send('POST', '/certificado', Payload);
 end;
 
-function TIntegraCertificado.Mostra: TJSONObject;
+function TIntegraCertificado.Mostra: string;
 begin
   Result := FClient.Send('GET', '/certificado');
-end.
+end;
 
 end.

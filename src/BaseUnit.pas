@@ -3,7 +3,7 @@ unit BaseUnit;
 interface
 
 uses
-  System.SysUtils, System.Classes, ClientUnit, ServicesUnit, IdHTTP, System.RegularExpressions, System.JSON;
+  System.SysUtils, System.Classes, ClientUnit, ServicesUnit, System.RegularExpressions, System.JSON;
 
 type
   EBaseException = class(Exception);
@@ -16,11 +16,14 @@ type
       AMBIENTE_PRODUCAO = 1;
       AMBIENTE_HOMOLOGACAO = 2;
 
-    function CheckKey(const Payload: TJSONObject): string;
+    function CheckKey(const Payload: TJSONObject): string; overload;
+    function CheckKey(const Chave: string): string; overload;
 
   public
     constructor Create(Params: TJSONObject);
     destructor Destroy; override;
+
+    property Client: TClient read FClient;
   end;
 
 implementation
@@ -28,44 +31,44 @@ implementation
 { TBase }
 
 constructor TBase.Create(Params: TJSONObject);
-var
-  Token: string;
-  Ambiente: Integer;
-  Timeout, Port: Integer;
-  Debug: Boolean;
 begin
   if not Assigned(Params) then
-    raise EBaseException.Create('Os parâmetros não podem ser nulos.');
+    raise EBaseException.Create('Devem ser passados os parametros básicos.');
 
-  Token := Params.GetValue<string>('token', '');
-  if Token.IsEmpty then
-    raise EBaseException.Create('O token é obrigatório.');
-
-  Ambiente := Params.GetValue<Integer>('ambiente', AMBIENTE_HOMOLOGACAO);
-  Timeout := Params.GetValue<Integer>('timeout', 60);
-  Port := Params.GetValue<Integer>('port', 443);
-  Debug := Params.GetValue<Boolean>('debug', False);
-
-  FClient := TClient.Create(Ambiente, Token, Timeout, Port, Debug);
+  FClient := TClient.Create(Params);
 end;
 
 destructor TBase.Destroy;
 begin
-  FClient.Free;
+  if Assigned(FClient) then
+    FClient.Free;
   inherited;
 end;
 
 function TBase.CheckKey(const Payload: TJSONObject): string;
 var
-  Key: string;
+  Val: TJSONValue;
+  ChaveStr: string;
 begin
   if not Assigned(Payload) then
     raise EBaseException.Create('O payload não pode ser nulo.');
 
-  Key := TRegEx.Replace(Payload.GetValue<string>('chave', ''), '\D', '');
+  ChaveStr := '';
+  Val := Payload.GetValue<TJSONValue>('chave', nil);
+  if Val <> nil then
+    ChaveStr := Val.Value;
 
-  if (Key = '') or (Key.Length <> 44) then
-    raise EBaseException.Create('A chave deve ter 44 dígitos numéricos.');
+  Result := CheckKey(ChaveStr);
+end;
+
+function TBase.CheckKey(const Chave: string): string;
+var
+  Key: string;
+begin
+  Key := TRegEx.Replace(Chave, '\D', '');
+
+  if (Key = '') or ((Key.Length <> 44) and (Key.Length <> 50)) then
+    raise EBaseException.Create('A chave deve ter 44 digitos para DFe as NFSe possui 50 digitos');
 
   Result := Key;
 end;

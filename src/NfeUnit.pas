@@ -20,6 +20,7 @@ type
     function Inutiliza(const Payload: TJSONObject): string;
     function Pdf(const Payload: TJSONObject): string;
     function Etiqueta(const Payload: TJSONObject): string;
+    function Simples(const Payload: TJSONObject): string;
     function Manifesta(const Payload: TJSONObject): string;
     function Backup(const Payload: TJSONObject): string;
     function Download(const Payload: TJSONObject): string;
@@ -28,7 +29,6 @@ type
     function Importa(const Payload: TJSONObject): string;
     function Comprovante(const Payload: TJSONObject): string;
     function Cadastro(const Payload: TJSONObject): string;
-    function Simples(const Payload: TJSONObject): string;
   end;
 
 implementation
@@ -94,6 +94,14 @@ begin
   Result := FClient.Send('GET', '/nfe/pdf/etiqueta/' + Key);
 end;
 
+function TIntegraNfe.Simples(const Payload: TJSONObject): string;
+var
+  Key: string;
+begin
+  Key := CheckKey(Payload);
+  Result := FClient.Send('GET', '/nfe/pdf/simples/' + Key);
+end;
+
 function TIntegraNfe.Manifesta(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/manifesta', Payload);
@@ -135,14 +143,6 @@ end;
 function TIntegraNfe.Cadastro(const Payload: TJSONObject): string;
 begin
   Result := FClient.Send('POST', '/nfe/cadastro', Payload);
-end;
-
-function TIntegraNfe.Simples(const Payload: TJSONObject): string;
-var
-  Key: string;
-begin
-  Key := CheckKey(Payload);
-  Result := FClient.Send('GET', '/nfe/pdf/simples/' + Key);
 end;
 
 end.
