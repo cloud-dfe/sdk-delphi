@@ -155,8 +155,6 @@ begin
         Payload.AddPair('observacao', '');
 
         Resp := IntegraCte.Preview(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

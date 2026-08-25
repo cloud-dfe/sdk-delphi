@@ -52,8 +52,6 @@ begin
 
     try
       Resp := IntegraCte.Status;
-      Resp := UTF8ToString(Resp);
-
       if Resp <> '' then
         ShowMessage('Status retornado: ' + Resp)
       else

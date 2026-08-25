@@ -56,8 +56,6 @@ begin
         Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
 
         Resp := IntegraDfe.Eventos(Payload);
-        Resp := UTF8ToString(Resp);
-
         ShowMessage(Resp);
 
       finally

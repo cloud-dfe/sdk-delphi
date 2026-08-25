@@ -55,8 +55,6 @@ begin
     try
       Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
       Resp := IntegraNfce.Pdf(Payload);
-      Resp := UTF8ToString(Resp);
-
       JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
       try
         if Assigned(JSONResp) then

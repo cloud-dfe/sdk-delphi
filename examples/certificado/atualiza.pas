@@ -70,8 +70,6 @@ begin
         Payload.AddPair('senha', 'senha');
 
         Resp := IntegraCertificado.Atualiza(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

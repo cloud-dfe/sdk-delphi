@@ -60,8 +60,6 @@ begin
         Payload.AddPair('cnpj', '06338788000127');
 
         Resp := IntegraDfe.BuscaCte(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

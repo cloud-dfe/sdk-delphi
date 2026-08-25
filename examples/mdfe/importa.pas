@@ -65,8 +65,6 @@ begin
         Payload.AddPair('xml', XMLBase64);
 
         Resp := IntegraMdfe.Importa(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

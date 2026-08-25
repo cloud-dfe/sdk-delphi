@@ -69,7 +69,6 @@ begin
 
         Resp := IntegraNfse.Localiza(Payload);
         
-        Resp := UTF8ToString(Resp);
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         
         try

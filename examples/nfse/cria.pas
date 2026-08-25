@@ -12,6 +12,7 @@ type
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
+    procedure ProcessaNfseResposta(const RespJSON: string);
   public
     { Public declarations }
   end;
@@ -113,10 +114,7 @@ begin
         Payload.AddPair('obra', Obra);
         
         Resp := IntegraNfse.Cria(Payload);
-        Resp := UTF8ToString(Resp);
-
-        ProcessaNfseResposta(Resp)        
-        
+        ProcessaNfseResposta(Resp);
       finally
         Payload.Free;
       end;

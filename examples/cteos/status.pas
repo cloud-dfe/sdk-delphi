@@ -52,8 +52,6 @@ begin
 
     try
       Resp := IntegraCteOS.Status;
-      Resp := UTF8ToString(Resp);
-
       if Resp <> '' then
         ShowMessage('Status retornado: ' + Resp)
       else

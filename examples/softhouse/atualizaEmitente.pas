@@ -82,8 +82,6 @@ begin
         Payload.AddPair('webhook', 'https://seusite.com.br/notifications');
 
         Resp := IntegraSofthouse.CriaEmitente(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

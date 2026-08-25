@@ -98,8 +98,6 @@ begin
         Payload.AddPair('documentos', Documentos);
 
         Resp := IntegraSofthouse.AtualizaEmitente(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then
@@ -112,8 +110,7 @@ begin
 
       finally
         Payload.Free;
-        Documentos.Free;
-      end;
+end;
 
     finally
       IntegraSofthouse.Free;

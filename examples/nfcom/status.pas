@@ -53,8 +53,6 @@ begin
 
     try
       Resp := IntegraNfcom.Status;
-      Resp := UTF8ToString(Resp);
-
       JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
       try
         if Assigned(JSONResp) then

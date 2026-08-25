@@ -60,8 +60,6 @@ begin
         // Payload.AddPair('cpf', '12345678901'); // CPF (opcional)
 
         Resp := IntegraNfe.Cadastro(Payload);
-        Resp := UTF8ToString(Resp);
-        
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

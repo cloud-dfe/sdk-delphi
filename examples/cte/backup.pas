@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, UtilUnit, CteUnit, System.JSON;
 
 type
     TForm1 = class(TForm)
@@ -58,8 +58,6 @@ begin
                 Payload.AddPair('mes', '2');
 
                 Resp := IntegraCte.Backup(Payload);
-                Resp := UTF8ToString(Resp);
-
                 JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
                 try
                     if Assigned(JSONResp) then

@@ -12,7 +12,7 @@ type
     Button1: TButton;
     procedure Button1Click(Sender: TObject);
   private
-    procedure ProcessaResposta(const Resp: TJSONObject);
+    procedure ProcessaResposta(const RespJSON: string);
   public
     { Public declarations }
   end;
@@ -33,7 +33,9 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
-  Params, Payload, JSONResp: TJSONObject;
+  Params, Payload: TJSONObject;
+  ReceitasArray, ValoresArray, ExtrasArray: TJSONArray;
+  Receita, DocumentoOrigem, Referencia, Valor, Contribuinte, Extra: TJSONObject;
 begin
   FToken := 'TokenDoEmitente';
   FAmbiente := 2; // 1 - Produção, 2 - Homologação
@@ -50,210 +52,142 @@ begin
     Params.AddPair('debug', TJSONBool.Create(FDebug));
 
     IntegraGnre := TIntegraGnre.Create(Params);
-
     try
       Payload := TJSONObject.Create;
-    try
-      Payload.AddPair('numero', '6');
-      Payload.AddPair('uf_favoverida', 'RO');
-      Payload.AddPair('ie_emitente_uf_favorecida', TJSONNull.Create);
-      Payload.AddPair('tipo', TJSONNumber.Create(0));
-      Payload.AddPair('valor', TJSONNumber.Create(12.55));
-      Payload.AddPair('data_pagamento', '2022-05-22');
-      Payload.AddPair('identificador_guia', '12345');
-
-    // Adiciona "receitas"
-    var ReceitasArray := TJSONArray.Create;
-    var Receita := TJSONObject.Create;
-    try
-      Receita.AddPair('codigo', '100102');
-      Receita.AddPair('detalhamento', TJSONNull.Create);
-      Receita.AddPair('data_vencimento', '2022-05-22');
-      Receita.AddPair('convenio', 'Convênio ICMS 142/18');
-      Receita.AddPair('numero_controle', '1');
-      Receita.AddPair('numero_controle_fecp', TJSONNull.Create);
-
-      // Adiciona "documento_origem"
-      var DocumentoOrigem := TJSONObject.Create;
       try
+        Payload.AddPair('numero', '6');
+        Payload.AddPair('uf_favoverida', 'RO');
+        Payload.AddPair('ie_emitente_uf_favorecida', TJSONNull.Create);
+        Payload.AddPair('tipo', TJSONNumber.Create(0));
+        Payload.AddPair('valor', TJSONNumber.Create(12.55));
+        Payload.AddPair('data_pagamento', '2022-05-22');
+        Payload.AddPair('identificador_guia', '12345');
+
+        ReceitasArray := TJSONArray.Create;
+        Receita := TJSONObject.Create;
+        Receita.AddPair('codigo', '100102');
+        Receita.AddPair('detalhamento', TJSONNull.Create);
+        Receita.AddPair('data_vencimento', '2022-05-22');
+        Receita.AddPair('convenio', 'Convênio ICMS 142/18');
+        Receita.AddPair('numero_controle', '1');
+        Receita.AddPair('numero_controle_fecp', TJSONNull.Create);
+
+        DocumentoOrigem := TJSONObject.Create;
         DocumentoOrigem.AddPair('numero', '000000001');
         DocumentoOrigem.AddPair('tipo', '10');
         Receita.AddPair('documento_origem', DocumentoOrigem);
-      finally
-        DocumentoOrigem.Free;
-      end;
 
-      Receita.AddPair('produto', TJSONNull.Create);
+        Receita.AddPair('produto', TJSONNull.Create);
 
-      // Adiciona "referencia"
-      var Referencia := TJSONObject.Create;
-      try
+        Referencia := TJSONObject.Create;
         Referencia.AddPair('periodo', '0');
         Referencia.AddPair('mes', '05');
         Referencia.AddPair('ano', '2022');
         Referencia.AddPair('parcela', TJSONNull.Create);
         Receita.AddPair('referencia', Referencia);
-      finally
-        Referencia.Free;
-      end;
 
-      // Adiciona "valores"
-      var ValoresArray := TJSONArray.Create;
-      var Valor := TJSONObject.Create;
-      try
+        ValoresArray := TJSONArray.Create;
+        Valor := TJSONObject.Create;
         Valor.AddPair('valor', TJSONNumber.Create(12.55));
         Valor.AddPair('tipo', '11');
-        ValoresArray.AddElement(Valor);
-      except
-        Valor.Free;
-        raise;
-      end;
-      Receita.AddPair('valores', ValoresArray);
+        ValoresArray.Add(Valor);
+        Receita.AddPair('valores', ValoresArray);
 
-      // Adiciona "contribuinte_destinatario"
-      var Contribuinte := TJSONObject.Create;
-      try
+        Contribuinte := TJSONObject.Create;
         Contribuinte.AddPair('cnpj', TJSONNull.Create);
         Contribuinte.AddPair('cpf', TJSONNull.Create);
         Contribuinte.AddPair('ie', TJSONNull.Create);
         Contribuinte.AddPair('razao', TJSONNull.Create);
         Contribuinte.AddPair('ibge', TJSONNull.Create);
         Receita.AddPair('contribuinte_destinatario', Contribuinte);
-      finally
-        Contribuinte.Free;
-      end;
 
-      // Adiciona "extras"
-      var ExtrasArray := TJSONArray.Create;
-      var Extra := TJSONObject.Create;
-      try
+        ExtrasArray := TJSONArray.Create;
+        Extra := TJSONObject.Create;
         Extra.AddPair('codigo', '52');
         Extra.AddPair('conteudo', '32220526434850000191550100000000011015892724');
-        ExtrasArray.AddElement(Extra);
-      except
-        Extra.Free;
-        raise;
+        ExtrasArray.Add(Extra);
+        Receita.AddPair('extras', ExtrasArray);
+
+        ReceitasArray.Add(Receita);
+        Payload.AddPair('receitas', ReceitasArray);
+
+        Resp := IntegraGnre.Cria(Payload);
+
+        ProcessaResposta(Resp);
+      finally
+        Payload.Free;
       end;
-      Receita.AddPair('extras', ExtrasArray);
-
-      ReceitasArray.AddElement(Receita);
-    except
-      Receita.Free;
-      raise;
-    end;
-
-      Payload.AddPair('receitas', ReceitasArray);
-    finally
-      Payload.Free;
-    end;
-
     finally
       IntegraGnre.Free;
     end;
-
   finally
     Params.Free;
   end;
 end;
 
-procedure TForm1.ProcessaResposta(const Resp: TJSONObject);
+procedure TForm1.ProcessaResposta(const RespJSON: string);
 var
+  RespObj: TJSONObject;
   Chave: string;
   Codigo, Tentativa: Integer;
-  ConsultaPayload: TJSONObject;
+  ConsultaPayload, JSONConsultaResp: TJSONObject;
   ConsultaResp: string;
-  JSONConsultaResp: TJSONObject;
 begin
-  if Resp.GetValue('sucesso').AsType<Boolean> then
+  RespObj := TJSONObject.ParseJSONValue(RespJSON) as TJSONObject;
+  if not Assigned(RespObj) then
   begin
-    Chave := TIntegraUtil.GetValueFromJson(Resp, 'chave');
-    Codigo := Resp.GetValue('codigo').AsType<Integer>;
+    ShowMessage('Resposta: ' + RespJSON);
+    Exit;
+  end;
 
-    if Codigo = 5023 then
+  try
+    if RespObj.GetValue<Boolean>('sucesso', False) then
     begin
-      Sleep(5000);
-      Tentativa := 1;
+      Chave := TIntegraUtil.GetValueFromJson(RespObj, 'chave');
+      Codigo := RespObj.GetValue<Integer>('codigo', 0);
 
-      while Tentativa <= 5 do
+      if Codigo = 5023 then
       begin
-        ConsultaPayload := TJSONObject.Create;
-        try
-          ConsultaPayload.AddPair('chave', Chave);
-          ConsultaResp := IntegraGnre.Consulta(ConsultaPayload);
-          JSONConsultaResp := TJSONObject.ParseJSONValue(UTF8ToString(ConsultaResp)) as TJSONObject;
+        Sleep(5000);
+        Tentativa := 1;
 
-          if Assigned(JSONConsultaResp) then
+        while Tentativa <= 5 do
+        begin
+          ConsultaPayload := TJSONObject.Create;
           try
-            Codigo := JSONConsultaResp.GetValue('codigo').AsType<Integer>;
-            if Codigo <> 5023 then
-            begin
-              if JSONConsultaResp.GetValue('sucesso').AsType<Boolean> then
+            ConsultaPayload.AddPair('chave', Chave);
+            ConsultaResp := IntegraGnre.Consulta(ConsultaPayload);
+            JSONConsultaResp := TJSONObject.ParseJSONValue(ConsultaResp) as TJSONObject;
+
+            if Assigned(JSONConsultaResp) then
+            try
+              Codigo := JSONConsultaResp.GetValue<Integer>('codigo', 0);
+              if Codigo <> 5023 then
               begin
-                ShowMessage('GNRE autorizado: ' + JSONConsultaResp.Format);
-                Break;
-              end
-              else
-              begin
-                ShowMessage('GNRE rejeitado: ' + JSONConsultaResp.Format);
+                if JSONConsultaResp.GetValue<Boolean>('sucesso', False) then
+                  ShowMessage('GNRE autorizado: ' + JSONConsultaResp.Format)
+                else
+                  ShowMessage('GNRE rejeitado: ' + JSONConsultaResp.Format);
                 Break;
               end;
+            finally
+              JSONConsultaResp.Free;
             end;
           finally
-            JSONConsultaResp.Free;
+            ConsultaPayload.Free;
           end;
 
-        finally
-          ConsultaPayload.Free;
+          Sleep(5000);
+          Inc(Tentativa);
         end;
-
-        Sleep(5000);
-        Inc(Tentativa);
-      end;
-
+      end
+      else
+        ShowMessage('GNRE autorizado: ' + RespObj.Format);
     end
     else
-    begin
-      ShowMessage('GNRE autorizado: ' + Resp.Format);
-    end;
-
-  end
-  else
-  begin
-    Codigo := Resp.GetValue('codigo').AsType<Integer>;
-    if (Codigo = 5001) or (Codigo = 5002) then
-    begin
-      ShowMessage('Erro nos campos: ' + TIntegraUtil.GetValueFromJson(Resp, 'erros'));
-    end
-    else if (Codigo = 5008) then
-    begin
-      Chave := TIntegraUtil.GetValueFromJson(Resp, 'chave');
-      ShowMessage('Erro ou timeout. Sincronizando GNRE com chave: ' + Chave);
-
-      ConsultaPayload := TJSONObject.Create;
-      try
-        ConsultaPayload.AddPair('chave', Chave);
-        ConsultaResp := IntegraGnre.Consulta(ConsultaPayload);
-        JSONConsultaResp := TJSONObject.ParseJSONValue(UTF8ToString(ConsultaResp)) as TJSONObject;
-
-        if Assigned(JSONConsultaResp) then
-        try
-          if JSONConsultaResp.GetValue('sucesso').AsType<Boolean> then
-            ShowMessage('GNRE autorizado: ' + JSONConsultaResp.Format)
-          else
-            ShowMessage('GNRE rejeitado: ' + JSONConsultaResp.Format);
-        finally
-          JSONConsultaResp.Free;
-        end;
-
-      finally
-        ConsultaPayload.Free;
-      end;
-
-    end
-    else
-    begin
-      ShowMessage('GNRE rejeitado: ' + Resp.Format);
-    end;
+      ShowMessage('GNRE rejeitado: ' + RespObj.Format);
+  finally
+    RespObj.Free;
   end;
 end;
 

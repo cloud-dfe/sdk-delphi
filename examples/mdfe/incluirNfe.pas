@@ -61,8 +61,6 @@ begin
         Payload.AddPair('chave_nfe', '50000000000000000000000000000000000000000001');
 
         Resp := IntegraMdfe.Nfe(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

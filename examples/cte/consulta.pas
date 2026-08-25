@@ -56,8 +56,6 @@ begin
         Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
 
         Resp := IntegraCte.Consulta(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

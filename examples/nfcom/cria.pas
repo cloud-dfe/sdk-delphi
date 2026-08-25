@@ -194,7 +194,6 @@ begin
         // Envia
         Resp := IntegraNfcom.Cria(Payload);
         // Se a função retorna Ansi/UTF8, converta conforme necessário:
-        Resp := UTF8ToString(Resp);
         ProcessaResposta(Resp);
 
       finally

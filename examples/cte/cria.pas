@@ -12,6 +12,7 @@ type
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
+    procedure ProcessaCteResposta(const RespJSON: string);
   public
     { Public declarations }
   end;

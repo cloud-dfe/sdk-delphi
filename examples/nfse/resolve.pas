@@ -29,12 +29,6 @@ implementation
 
 {$R *.dfm}
 
-// Função para garantir a conversão correta de UTF-8
-function EnsureUTF8(const S: string): string;
-begin
-  Result := UTF8ToString(AnsiString(S)); // Converte para UTF-8
-end;
-
 procedure TForm1.Button1Click(Sender: TObject);
 var
   Resp: string;
@@ -60,17 +54,15 @@ begin
       Payload := TJSONObject.Create;
       try
         Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
-        
+
         Resp := IntegraNfse.Resolve(Payload);
-        
-        Resp := EnsureUTF8(Resp);
 
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then
             ShowMessage('Resposta JSON: ' + JSONResp.Format)
           else
-            ShowMessage('Erro ao converter a resposta para JSON');
+            ShowMessage('Resposta: ' + Resp);
         finally
           JSONResp.Free;
         end;

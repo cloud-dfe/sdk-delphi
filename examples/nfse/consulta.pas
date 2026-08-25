@@ -55,8 +55,6 @@ begin
         Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
         Resp := IntegraNfse.Consulta(Payload);
 
-        Resp := UTF8ToString(Resp);
-
         ShowMessage('Resposta completa do JSON: ' + sLineBreak + Resp);
 
       finally

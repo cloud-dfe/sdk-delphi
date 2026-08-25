@@ -52,7 +52,6 @@ begin
     try
       Resp := IntegraNfse.Offline;
 
-      Resp := UTF8ToString(Resp);
       JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
 
       try

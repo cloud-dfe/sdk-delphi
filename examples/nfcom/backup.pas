@@ -59,8 +59,6 @@ begin
         Payload.AddPair('emails', TJSONArray.Create(TJSONString.Create('contato@cloud-dfe.com.br')));
 
         Resp := IntegraNfcom.Backup(Payload);
-        Resp := UTF8ToString(Resp);
-
         JSONResp := TJSONObject.ParseJSONValue(Resp) as TJSONObject;
         try
           if Assigned(JSONResp) then

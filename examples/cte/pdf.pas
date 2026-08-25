@@ -56,8 +56,6 @@ begin
         Payload.AddPair('chave', '50000000000000000000000000000000000000000000');
 
         Resp := IntegraCte.Pdf(Payload);
-        Resp := UTF8ToString(Resp);
-
         if Resp <> '' then
           ShowMessage('PDF gerado com sucesso. Conteúdo do PDF: ' + Resp)
         else
