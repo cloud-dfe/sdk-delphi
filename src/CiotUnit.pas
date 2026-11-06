@@ -26,7 +26,7 @@ implementation
 
 function TIntegraCiot.Cria(const Payload: TJSONObject): string;
 begin
-  Result := FClient.Send('POST', '/ciot', Payload);
+  Result := FClient.Send('POST', '/ciot/ailog', Payload);
 end;
 
 function TIntegraCiot.Consulta(const Payload: TJSONObject): string;
@@ -34,27 +34,27 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', '/ciot/' + Key);
+  Result := FClient.Send('GET', '/ciot/ailog/' + Key);
 end;
 
 function TIntegraCiot.Busca(const Payload: TJSONObject): string;
 begin
-  Result := FClient.Send('POST', '/ciot/busca', Payload);
+  Result := FClient.Send('POST', '/ciot/ailog/busca', Payload);
 end;
 
 function TIntegraCiot.Cancela(const Payload: TJSONObject): string;
 begin
-  Result := FClient.Send('POST', '/ciot/cancela', Payload);
+  Result := FClient.Send('POST', '/ciot/ailog/cancela', Payload);
 end;
 
 function TIntegraCiot.Encerra(const Payload: TJSONObject): string;
 begin
-  Result := FClient.Send('POST', '/ciot/encerra', Payload);
+  Result := FClient.Send('POST', '/ciot/ailog/encerra', Payload);
 end;
 
 function TIntegraCiot.Retifica(const Payload: TJSONObject): string;
 begin
-  Result := FClient.Send('POST', '/ciot/retifica', Payload);
+  Result := FClient.Send('POST', '/ciot/ailog/retifica', Payload);
 end;
 
 function TIntegraCiot.Pdf(const Payload: TJSONObject): string;
@@ -62,12 +62,12 @@ var
   Key: string;
 begin
   Key := CheckKey(Payload);
-  Result := FClient.Send('GET', '/ciot/pdf/' + Key);
+  Result := FClient.Send('GET', '/ciot/ailog/pdf/' + Key);
 end;
 
 function TIntegraCiot.Transportador(const Payload: TJSONObject): string;
 begin
-  Result := FClient.Send('POST', '/ciot/transportador', Payload);
+  Result := FClient.Send('POST', '/ciot/ailog/transportador', Payload);
 end;
 
 end.
