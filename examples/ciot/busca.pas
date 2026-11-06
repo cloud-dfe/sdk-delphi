@@ -54,6 +54,8 @@ begin
     try
       Payload := TJSONObject.Create;
       try
+        Payload.AddPair('numero_inicial', '1');
+        Payload.AddPair('numero_final', '1999');
         Payload.AddPair('data_inicial', '2026-11-01');
         Payload.AddPair('data_final', '2026-11-30');
         Payload.AddPair('situacao', 'ABERTO');

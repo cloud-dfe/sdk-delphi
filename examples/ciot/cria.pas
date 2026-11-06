@@ -56,7 +56,8 @@ begin
     try
       Payload := TJSONObject.Create;
       try
-        Payload.AddPair('identificacao', 'VIAGEM-0001');
+        Payload.AddPair('numero', '1001');
+        Payload.AddPair('identificacao', 'PEDIDO-77');
         Payload.AddPair('tipo_operacao', '1');
         Payload.AddPair('data_inicio', '2026-11-10');
         Payload.AddPair('data_fim', '2026-11-12');
