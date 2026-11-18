@@ -48,7 +48,7 @@ As bibliotecas SSL (como `libeay32.dll` e `ssleay32.dll`) são fundamentais para
 
 ## Observações Importantes
 
-> **Webhooks:** Não disponível no SDK Delphi. Por ser uma tecnologia voltada a aplicações desktop/client, o recebimento de webhooks não se aplica a esse contexto, pois exigiria expor portas locais na rede do cliente.
+> **WebhookClass:** Não disponível no SDK Delphi. Por ser uma tecnologia voltada a aplicações desktop/client, o recebimento de webhooks não se aplica a esse contexto, pois exigiria expor portas locais na rede do cliente.
 
 ---
 
